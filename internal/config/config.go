@@ -1,15 +1,16 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
 	DataBaseURL string
-	// JWTSecret   string
-	Port string
+	Port        string
+	JWTSecret   string
 }
 
 func LoadConfig() Config {
@@ -22,10 +23,12 @@ func LoadConfig() Config {
 	dataBaseURL := os.Getenv("DATABASE_URL")
 
 	port := os.Getenv("PORT")
+	JWTSecret := os.Getenv("JWT_SECRET")
 
 	return Config{
 		DataBaseURL: dataBaseURL,
 		Port:        port,
+		JWTSecret:   JWTSecret,
 	}
 
 }
