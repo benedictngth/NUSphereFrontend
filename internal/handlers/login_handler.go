@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 
 	"goBackend/internal/services"
 )
@@ -17,6 +18,7 @@ func LoginHandler(authService services.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req LoginRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
+			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
 			return
 		}

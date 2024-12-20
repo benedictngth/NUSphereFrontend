@@ -18,7 +18,7 @@ func (pg *Postgres) CreateUser(ctx context.Context, user models.User) error {
 	query := `INSERT INTO users (username, email, password_hash) VALUES (@userName, @userEmail, @userPasswordHash)`
 	args := pgx.NamedArgs{
 		"userName":         user.Username,
-		"userEamil":        user.Email,
+		"userEmail":        user.Email,
 		"userPasswordHash": user.PasswordHash,
 	}
 	_, err := pg.db.Exec(ctx, query, args)
@@ -30,8 +30,8 @@ func (pg *Postgres) CreateUser(ctx context.Context, user models.User) error {
 }
 
 func (pg *Postgres) GetUserByUsername(ctx context.Context, username string) (models.User, error) {
-	query := fmt.Sprintf("SELECT username, email FROM user WHERE username = %s", username)
-	rows, err := pg.db.Query(ctx, query)
+	query := "SELECT * FROM users WHERE username = $1"
+	rows, err := pg.db.Query(ctx, query, username)
 	if err != nil {
 		return models.User{}, fmt.Errorf("unable to query users: %w", err)
 	}

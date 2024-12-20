@@ -3,9 +3,11 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 	"goBackend/internal/models"
+	"log"
 
-	"goBackend/internal/db/repository"
+	pg "goBackend/internal/db/repository"
 	"goBackend/internal/utils"
 )
 
@@ -40,6 +42,7 @@ func (s *authService) Register(ctx context.Context, username, email, password st
 
 func (s *authService) Login(ctx context.Context, username, password string) (string, error) {
 	user, err := s.postgres.GetUserByUsername(ctx, username)
+	fmt.Println(user.ID)
 	if err != nil {
 		return "", errors.New("invalid username")
 	}
@@ -50,6 +53,7 @@ func (s *authService) Login(ctx context.Context, username, password string) (str
 
 	token, err := utils.GenerateJWT(user.ID, s.jwtSecret)
 	if err != nil {
+		log.Printf("unable to generate token")
 		return "", err
 	}
 

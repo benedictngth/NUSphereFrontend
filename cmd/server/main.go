@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"goBackend/internal/config"
-	"goBackend/internal/db/repository"
+	pg "goBackend/internal/db/repository"
 	"goBackend/internal/handlers"
 	"goBackend/internal/services"
 )
@@ -34,14 +34,16 @@ func main() {
 
 	protected := r.Group("/")
 	protected.Use(handlers.AuthMiddleware(cfg.JWTSecret))
-	protected.GET("/profile", func(ctx *gin.Context) {
-		user, err := ctx.Get("user")
-		if !err {
-			ctx.JSON(404, gin.H{"error": "user not found"})
-			return
-		}
-		ctx.JSON(200, gin.H{"user": user})
-	})
+	{
+		protected.GET("/profile", func(c *gin.Context) {
+			user, err := c.Get("user_id")
+			if !err {
+				c.JSON(404, gin.H{"error": "user not found"})
+				return
+			}
+			c.JSON(200, gin.H{"user": user})
+		})
+	}
 
 	port := cfg.Port
 	if port == "" {
