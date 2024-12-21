@@ -1,12 +1,13 @@
 package users
 
+//contains the handlers for the user routes and routers
+
 import (
 	// "errors"
 	"context"
-	"github.com/gin-gonic/gin"
-	// "goBackend/internal/common"
-
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func UsersRegister(router *gin.RouterGroup, authService AuthService) {
@@ -31,6 +32,7 @@ type RegisterRequest struct {
 	Password string `json:"password" binding:"required,min=6"`
 }
 
+// handler for registering a new user in the system
 func RegisterHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req RegisterRequest
@@ -54,6 +56,7 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// handler for logging in a user calls authService.Login
 func LoginHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req LoginRequest

@@ -8,6 +8,7 @@ import (
 	"goBackend/internal/common"
 )
 
+// define the methods for userRegister handlers
 type AuthService interface {
 	Register(ctx context.Context, username, email, password string) (User, error)
 	Login(ctx context.Context, username, password string) (string, error)
