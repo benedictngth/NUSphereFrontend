@@ -7,17 +7,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"goBackend/internal/common"
 	"goBackend/internal/config"
-	pg "goBackend/internal/db/repository"
-	"goBackend/internal/handlers"
-	"goBackend/internal/services"
+	"goBackend/internal/users"
 )
 
 func main() {
 	cfg := config.LoadConfig()
 	fmt.Println(cfg)
 
-	pool, err := pg.NewPG(context.Background(), cfg.DataBaseURL)
+	pool, err := common.NewPG(context.Background(), cfg.DataBaseURL)
 
 	if err != nil {
 		log.Fatalf("unable to create connection pool: %v\n", err)
@@ -25,25 +24,27 @@ func main() {
 	defer pool.Close()
 
 	//create repository and services
-	authService := services.NewAuthService(*pool, cfg.JWTSecret)
+
+	authService := users.NewAuthService(*pool, cfg.JWTSecret)
 
 	r := gin.Default()
 
-	r.POST("/register", handlers.RegisterHandler(authService))
-	r.POST("/login", handlers.LoginHandler(authService))
+	v1 := r.Group("/api")
+	users.UsersRegister(v1.Group("/users"), authService)
 
-	protected := r.Group("/")
-	protected.Use(handlers.AuthMiddleware(cfg.JWTSecret))
-	{
-		protected.GET("/profile", func(c *gin.Context) {
-			user, err := c.Get("user_id")
-			if !err {
-				c.JSON(404, gin.H{"error": "user not found"})
-				return
-			}
-			c.JSON(200, gin.H{"user": user})
-		})
-	}
+	//reimplement protected route
+	// protected := v1.Group("/profile")
+	// protected.Use(users.AuthMiddleware(cfg.JWTSecret))
+	// {
+	// 	protected.GET("/profile", func(c *gin.Context) {
+	// 		user, err := c.Get("user_id")
+	// 		if !err {
+	// 			c.JSON(404, gin.H{"error": "user not found"})
+	// 			return
+	// 		}
+	// 		c.JSON(200, gin.H{"user": user})
+	// 	})
+	// }
 
 	port := cfg.Port
 	if port == "" {

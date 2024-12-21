@@ -1,4 +1,4 @@
-package pg
+package common
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 )
 
 type Postgres struct {
-	db *pgxpool.Pool
+	DB *pgxpool.Pool
 }
 
 var (
@@ -25,18 +25,22 @@ func NewPG(ctx context.Context, connString string) (*Postgres, error) {
 		if err != nil {
 			fmt.Printf("unable to create connection pool: %v\n", err)
 		}
-		pgInstance = &Postgres{db: db}
+		pgInstance = &Postgres{DB: db}
 	})
 
 	return pgInstance, nil
 }
 
 func (pg *Postgres) Ping(ctx context.Context) {
-	if err := pg.db.Ping(ctx); err != nil {
+	if err := pg.DB.Ping(ctx); err != nil {
 		fmt.Printf("unable to ping database: %v\n", err)
 	}
 }
 
 func (pg *Postgres) Close() {
-	pg.db.Close()
+	pg.DB.Close()
+}
+
+func GetDB() *Postgres {
+	return pgInstance
 }
