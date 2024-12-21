@@ -14,6 +14,17 @@ func UsersRegister(router *gin.RouterGroup, authService AuthService) {
 	router.POST("/login", LoginHandler(authService))
 }
 
+func Profile(router *gin.RouterGroup) {
+	router.GET("/profile", func(c *gin.Context) {
+		user, err := c.Get("user_id")
+		if !err {
+			c.JSON(404, gin.H{"error": "user not found"})
+			return
+		}
+		c.JSON(200, gin.H{"user": user})
+	})
+}
+
 type RegisterRequest struct {
 	Username string `json:"username" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
