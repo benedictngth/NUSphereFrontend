@@ -8,20 +8,21 @@ import (
 	"goBackend/internal/common"
 )
 
-// define the methods for userRegister handlers
+// define the AuthService interface with the methods that the service will implement
 type AuthService interface {
 	Register(ctx context.Context, username, email, password string) (User, error)
 	Login(ctx context.Context, username, password string) (string, error)
 }
 
 type authService struct {
-	repo      common.Postgres
 	jwtSecret string
 }
 
-func NewAuthService(repo common.Postgres, jwtSecret string) *authService {
-	return &authService{repo: repo, jwtSecret: jwtSecret}
+func NewAuthService(jwtSecret string) *authService {
+	return &authService{jwtSecret: jwtSecret}
 }
+
+//implement the AuthService interface methods and calls respective repository methods
 
 func (s *authService) Register(ctx context.Context, username, email, password string) (User, error) {
 	hash, err := common.HashPassword(password)

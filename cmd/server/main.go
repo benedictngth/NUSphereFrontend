@@ -25,7 +25,7 @@ func main() {
 
 	//create repository and services
 
-	authService := users.NewAuthService(*pool, cfg.JWTSecret)
+	authService := users.NewAuthService(cfg.JWTSecret)
 
 	r := gin.Default()
 
