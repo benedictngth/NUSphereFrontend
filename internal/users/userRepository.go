@@ -18,11 +18,11 @@ type UserRepository interface {
 
 // inserts a new user into the database with SQL query and given user Struct
 func CreateUser(pg *common.Postgres, ctx context.Context, user User) error {
-	query := `INSERT INTO users (username, email, password_hash) VALUES (@userName, @userEmail, @userPasswordHash)`
+	query := `INSERT INTO users (username, password_hash, public_id) VALUES (@userName, @userPasswordHash, @publicID)`
 	args := pgx.NamedArgs{
 		"userName":         user.Username,
-		"userEmail":        user.Email,
 		"userPasswordHash": user.PasswordHash,
+		"publicID":         user.PublicID,
 	}
 	_, err := pg.DB.Exec(ctx, query, args)
 	if err != nil {
@@ -41,4 +41,14 @@ func GetUserByUsername(pg *common.Postgres, ctx context.Context, username string
 	defer rows.Close()
 
 	return pgx.CollectOneRow(rows, pgx.RowToStructByName[User])
+}
+func GetUsers(pg *common.Postgres, ctx context.Context) ([]User, error) {
+	query := "SELECT * FROM users"
+	rows, err := pg.DB.Query(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("unable to query users: %w", err)
+	}
+	defer rows.Close()
+	//returns rows in a slice of User structs
+	return pgx.CollectRows(rows, pgx.RowToStructByName[User])
 }
