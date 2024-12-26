@@ -2,6 +2,7 @@ package users
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -12,8 +13,8 @@ import (
 
 // strip 'TOKEN' prefix from token string if exists
 func stripBearerPrefixFromTokenString(tok string) (string, error) {
-	if len(tok) > 5 && strings.ToUpper(tok[0:6]) == "TOKEN " {
-		return tok[6:], nil
+	if len(tok) > 6 && strings.ToUpper(tok[0:7]) == "BEARER " {
+		return tok[7:], nil
 	}
 	return tok, nil
 }
@@ -29,9 +30,10 @@ var MyAuth2Extractor = &request.MultiExtractor{
 	request.ArgumentExtractor{"access_token"},
 }
 
-func UpdateContextUserModel(c *gin.Context, my_user_id uint) {
+func UpdateContextUserModel(c *gin.Context, my_user_id, my_username string) {
 	var myUserModel User
 	c.Set("user_id", my_user_id)
+	c.Set("username", my_username)
 	c.Set("user_model", myUserModel)
 }
 
@@ -46,10 +48,12 @@ func AuthMiddleware(secret string) gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-		fmt.Println(token)
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			userID := uint(claims["user_id"].(float64))
-			UpdateContextUserModel(c, userID)
+			log.Print(claims)
+			log.Print(claims["user_id"], claims["username"])
+			userID := claims["user_id"].(string)
+			username := claims["username"].(string)
+			UpdateContextUserModel(c, userID, username)
 		}
 
 	}

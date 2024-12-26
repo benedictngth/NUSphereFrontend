@@ -1,15 +1,18 @@
 package common
 
 import (
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
-func GenerateJWT(userID string, secret string) (string, error) {
+func GenerateJWT(userID, username string, secret string) (string, error) {
 	claim := jwt.MapClaims{
-		"user_id": userID,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(),
+		"user_id":  userID,
+		"username": username,
+		//unused
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	tokenString, err := token.SignedString([]byte(secret))

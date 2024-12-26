@@ -57,7 +57,7 @@ func (s *authService) Login(ctx context.Context, username, password string) (str
 		return "", errors.New("invalid password")
 	}
 
-	token, err := common.GenerateJWT(user.PublicID, s.jwtSecret)
+	token, err := common.GenerateJWT(user.PublicID, user.Username, s.jwtSecret)
 	if err != nil {
 		log.Printf("unable to generate token")
 		return "", err
