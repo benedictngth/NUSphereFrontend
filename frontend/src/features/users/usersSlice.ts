@@ -8,11 +8,11 @@ import { selectCurrentUsername } from '@/features/auth/authSlice'
 import { apiSlice } from '@/api/apiSlice'
 
 export interface User {
-  id: string
-  name: string
+  ID: string
+  Username: string
 }
-const usersAdapter = createEntityAdapter<User>()
-const initialState = usersAdapter.getInitialState()
+// const usersAdapter = createEntityAdapter<User>()
+// const initialState = usersAdapter.getInitialState()
 
 //string, "payload creator" with a Promise containing data / rejected Promise
 export const fetchUsers = createAppAsyncThunk('users/fetchUsers', async () => {
@@ -71,7 +71,7 @@ export const selectAllUsers = createSelector(
 export const selectUserById = createSelector(
   selectAllUsers,
   (state: RootState, userId: string) => userId,
-  (usersResult,userId) => usersResult.find(user => user.id === userId)
+  (usersResult,userId) => usersResult.find(user => user.ID === userId)
 )
 
 export const selectCurrentUser = (state:RootState) => {

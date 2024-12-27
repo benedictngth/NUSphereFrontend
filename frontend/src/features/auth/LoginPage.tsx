@@ -27,10 +27,10 @@ export const LoginPage = () => {
         dispatch(userLoggedIn(username))
         navigate('/')
     }
-
+    console.log(users);
     const userOptions = users.map(user => (
-        <option key={user.id} value={user.id}>
-            {user.name}
+        <option key={user.ID} value={user.ID}>
+            {user.Username}
         </option>
     ))
 

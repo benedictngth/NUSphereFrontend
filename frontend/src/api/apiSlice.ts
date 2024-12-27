@@ -8,7 +8,7 @@ export type {Post};
 export const apiSlice = createApi({
     reducerPath: 'api',
 
-    baseQuery: fetchBaseQuery({baseUrl: '/fakeApi'}),
+    baseQuery: fetchBaseQuery({baseUrl: '/api'}),
     tagTypes: ['Post'],
     endpoints : builder => ({
         getPosts :builder.query<Post[],void>({

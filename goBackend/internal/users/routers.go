@@ -83,6 +83,6 @@ func GetUsersHandler(authService AuthService) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get users"})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"users": users})
+		c.JSON(http.StatusOK, users)
 	}
 }

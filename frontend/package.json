@@ -27,6 +27,7 @@
     "build": "tsc && vite build",
     "format": "prettier --write ./src/**/*.{ts,tsx,css}"
   },
+
   "devDependencies": {
     "@types/node": "^20.11.6",
     "@types/react": "^18.2.47",
