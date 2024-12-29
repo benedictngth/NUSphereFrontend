@@ -5,30 +5,11 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/golang-jwt/jwt/v5/request"
 )
-
-// strip 'TOKEN' prefix from token string if exists
-func stripBearerPrefixFromTokenString(tok string) (string, error) {
-	if len(tok) > 6 && strings.ToUpper(tok[0:7]) == "BEARER " {
-		return tok[7:], nil
-	}
-	return tok, nil
-}
-
-// extract JWT token from Authorization header
-var AuthorisationHeaderExtractor = &request.PostExtractionFilter{
-	Extractor: request.HeaderExtractor{"authorization"},
-	Filter:    stripBearerPrefixFromTokenString,
-}
-
-var MyAuth2Extractor = &request.MultiExtractor{
-	AuthorisationHeaderExtractor,
-	request.ArgumentExtractor{"access_token"},
-}
 
 func UpdateContextUserModel(c *gin.Context, my_user_id, my_username string) {
 	var myUserModel User
@@ -39,22 +20,43 @@ func UpdateContextUserModel(c *gin.Context, my_user_id, my_username string) {
 
 func AuthMiddleware(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token, err := request.ParseFromRequest(c.Request, MyAuth2Extractor, func(token *jwt.Token) (interface{}, error) {
-			b := ([]byte(secret))
-			return b, nil
-		})
-		if err != nil {
-			fmt.Println(err)
-			c.AbortWithStatus(http.StatusUnauthorized)
+		tokenString, err := c.Cookie("Authorisation")
+		if err != nil || tokenString == "" {
+			log.Print("token string: ", tokenString)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "no auth token in auth cookie, error: " + err.Error()})
 			return
 		}
-		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			log.Print(claims)
-			log.Print(claims["user_id"], claims["username"])
-			userID := claims["user_id"].(string)
-			username := claims["username"].(string)
-			UpdateContextUserModel(c, userID, username)
+		//remove the Bearer prefix
+		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+		//parse the token and validate signature and expiration
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("unexpected signing method: %v", token.Header["alg"])})
+				return nil, nil
+			}
+			return []byte(secret), nil
+		})
+
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+			return
 		}
 
+		claims, ok := token.Claims.(jwt.MapClaims)
+
+		if !ok || !token.Valid {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+		}
+
+		// Check the expiration
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "token expired"})
+			return
+		}
+		//atach the user_id and username to the context
+		userID := (claims["user_id"]).(string)
+		username := (claims["username"]).(string)
+		UpdateContextUserModel(c, userID, username)
 	}
+
 }

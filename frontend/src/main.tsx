@@ -11,11 +11,18 @@ import { apiSliceWithUsers } from './features/users/usersSlice'
 
 import './primitiveui.css'
 import './index.css'
+import { apiSlice } from './api/apiSlice'
 
+declare global {
+  interface Window {
+    apiSlice: typeof apiSlice;
+  }
+}
 
 function app() {
   // Start our mock API server
   store.dispatch(apiSliceWithUsers.endpoints.getUsers.initiate())
+  window.apiSlice = apiSlice;
 
 
 

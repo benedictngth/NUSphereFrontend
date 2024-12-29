@@ -5,6 +5,8 @@ package users
 import (
 	// "errors"
 	"context"
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +16,25 @@ func Users(router *gin.RouterGroup, authService AuthService) {
 	router.GET("", GetUsersHandler(authService))
 	router.POST("/register", RegisterHandler(authService))
 	router.POST("/login", LoginHandler(authService))
+	router.GET("/cookie", GetCookieHandler(authService))
+	router.GET("/deleteCookie", DeleteCookieHandler(authService))
+}
+func GetCookieHandler(authService AuthService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		cookie, err := c.Cookie("Authorisation")
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "cookie not found"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"cookie": cookie})
+	}
+}
+
+func DeleteCookieHandler(authService AuthService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.SetCookie("Authorisation", "", -1, "/", "localhost", false, true)
+		c.JSON(http.StatusOK, gin.H{"cookie": "deleted"})
+	}
 }
 
 func Profile(router *gin.RouterGroup) {
@@ -23,7 +44,7 @@ func Profile(router *gin.RouterGroup) {
 			c.JSON(404, gin.H{"error": "user not found"})
 			return
 		}
-		c.JSON(200, gin.H{"user": userID})
+		c.JSON(http.StatusOK, gin.H{"user": userID})
 	})
 }
 
@@ -71,7 +92,9 @@ func LoginHandler(authService AuthService) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"token": token})
+		log.Print("generated token string: ", token)
+		c.SetCookie("Authorisation", fmt.Sprintf("Bearer %v", token), 3600, "/", "localhost", false, true)
+		c.JSON(http.StatusOK, "logged in")
 	}
 }
 
