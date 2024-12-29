@@ -7,14 +7,11 @@
     "@emotion/styled": "^11.14.0",
     "@faker-js/faker": "^8",
     "@fontsource/roboto": "^5.1.0",
-    "@mswjs/data": "^0.16",
     "@mui/icons-material": "^6.2.1",
     "@mui/material": "^6.2.1",
     "@reduxjs/toolkit": "^2.2",
     "classnames": "^2.2.6",
     "date-fns": "^3",
-    "mock-socket": "^9.0.3",
-    "msw": "^2",
     "react": "^18",
     "react-dom": "^18",
     "react-redux": "^9",
@@ -27,7 +24,6 @@
     "build": "tsc && vite build",
     "format": "prettier --write ./src/**/*.{ts,tsx,css}"
   },
-
   "devDependencies": {
     "@types/node": "^20.11.6",
     "@types/react": "^18.2.47",
@@ -37,8 +33,5 @@
     "typescript": "^5.4",
     "vite": "^5.0.11"
   },
-  "msw": {
-    "workerDirectory": "public"
-  },
-  "packageManager": "yarn@4.2.2"
+  "packageManager": "yarn@4.5.3"
 }
