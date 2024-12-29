@@ -4,12 +4,12 @@ import "time"
 
 type Post struct {
 	//ID is nanoid not primary key
-	ID        string    `db:"post_public_id"`
+	ID        string    `db:"posts.public_id"`
 	Title     string    `db:"title"`
 	Content   string    `db:"content"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
-	UserID    string    `db:"user_public_id"`
+	UserID    string    `db:"users.public_id"`
 }
 
 type NewPost struct {

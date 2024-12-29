@@ -7,10 +7,10 @@ type User struct {
 	Username     string    `db:"username"`
 	PasswordHash string    `db:"password_hash"`
 	CreatedAt    time.Time `db:"created_at"`
-	PublicID     string    `db:"user_public_id"`
+	PublicID     string    `db:"public_id"`
 }
 
 type UserPublic struct {
-	ID       string `db:"user_public_id"`
+	ID       string `db:"public_id"`
 	Username string `db:"username"`
 }

@@ -18,7 +18,7 @@ type UserRepository interface {
 
 // inserts a new user into the database with SQL query and given user Struct
 func CreateUser(pg *common.Postgres, ctx context.Context, user User) error {
-	query := `INSERT INTO users (username, password_hash, user_public_id) VALUES (@userName, @userPasswordHash, @publicID)`
+	query := `INSERT INTO users (username, password_hash, public_id) VALUES (@userName, @userPasswordHash, @publicID)`
 	args := pgx.NamedArgs{
 		"userName":         user.Username,
 		"userPasswordHash": user.PasswordHash,
@@ -42,8 +42,21 @@ func GetUserByUsername(pg *common.Postgres, ctx context.Context, username string
 
 	return pgx.CollectOneRow(rows, pgx.RowToStructByName[User])
 }
+
+func GetUserByPublicID(pg *common.Postgres, ctx context.Context, publicID string) (User, error) {
+	query := "SELECT * FROM users WHERE public_id = $1"
+	rows, err := pg.DB.Query(ctx, query, publicID)
+	if err != nil {
+		return User{}, fmt.Errorf("unable to query users: %w", err)
+	}
+	defer rows.Close()
+
+	return pgx.CollectOneRow(rows, pgx.RowToStructByName[User])
+}
+
+// usage for frontend to get all users without id and password
 func GetUsers(pg *common.Postgres, ctx context.Context) ([]UserPublic, error) {
-	query := "SELECT user_public_id, username FROM users"
+	query := "SELECT public_id, username FROM users"
 	rows, err := pg.DB.Query(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("unable to query users: %w", err)
