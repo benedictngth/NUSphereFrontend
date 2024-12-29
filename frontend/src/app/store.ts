@@ -1,7 +1,7 @@
 import {configureStore, Action, ThunkAction} from '@reduxjs/toolkit';
 
 import { apiSlice } from '@/api/apiSlice';
-import postReducer from '@/features/posts/postSlice';
+// import postReducer from '@/features/posts/postSlice';
 // import usersReducer from '@/features/users/usersSlice';
 import authReducer from '@/features/auth/authSlice';
 import {listenerMiddleware} from '@/app/listernerMiddleware';
@@ -13,7 +13,7 @@ interface CounterState {
 
 export const store = configureStore({
     reducer: {
-        posts: postReducer,
+        // posts: postReducer,
         // users : usersReducer,
         auth : authReducer,
         [apiSlice.reducerPath]: apiSlice.reducer

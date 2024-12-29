@@ -4,7 +4,7 @@ import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "@/components/TimeAgo";
-import { ReactionButtons } from "./ReactionButtons";
+// import { ReactionButtons } from "./ReactionButtons";
 import {Grid2 as Grid} from "@mui/material";
 interface PostExcerptProps {
     post : Post
@@ -23,15 +23,15 @@ export function PostExcerpt({ post } :PostExcerptProps) {
     return (
     <Grid size={12}>
 
-    <PostItem key={post.id} elevation={3}>
+    <PostItem key={post.ID} elevation={3}>
     <Box p={2}>
     <Typography variant="h5" component="div">
-        <Link to ={`/posts/${post.id}`}>{post.title}</Link>
+        <Link to ={`/posts/${post.ID}`}>{post.Title}</Link>
     </Typography>
-    <PostAuthor userId={post.user} />
-    <Typography sx = {{marginTop : 2, marginBottom:5}} variant="body1" component="p">{post.content.substring(0, 100)}</Typography>
-    <TimeAgo timestamp={post.date} />
-    <ReactionButtons post={post} />
+    <PostAuthor userId={post.UserID} />
+    <Typography sx = {{marginTop : 2, marginBottom:5}} variant="body1" component="p">{post.Content.substring(0, 100)}</Typography>
+    <TimeAgo timestamp={post.CreatedAt} />
+    {/* <ReactionButtons post={post} /> */}
     </Box>
 </PostItem>
 </Grid>

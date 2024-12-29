@@ -1,4 +1,4 @@
-import {parseISO, formatDistanceToNow} from 'date-fns'
+import {parseISO, formatDistanceToNow, subHours} from 'date-fns'
 import { Typography } from '@mui/material'
 
 interface TimeAgoProps {
@@ -8,7 +8,8 @@ interface TimeAgoProps {
 export const TimeAgo = ({timestamp} : TimeAgoProps) => {
     let timeAgo = ''
     const date = parseISO(timestamp)
-    const timePeriod = formatDistanceToNow(date)
+
+    const timePeriod = formatDistanceToNow(subHours(date, 8))
     timeAgo = `${timePeriod} ago`
 
     return (

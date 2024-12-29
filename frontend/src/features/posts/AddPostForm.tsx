@@ -22,24 +22,25 @@ export const AddPostForm = () => {
     //trigger function, object with metadata about the request
     const [addNewPost, {isLoading}] = useAddNewPostMutation()
     const dispatch = useAppDispatch()
-    const userID = useAppSelector(selectCurrentUsername)!
+    const UserID = useAppSelector(selectCurrentUsername)!
     // console.log(userID)
     const handleSubmit = async (e: React.FormEvent<AddPostFormElements>) => {
         // Prevent server submission
         e.preventDefault()
 
         const { elements } = e.currentTarget
-        const title = elements.postTitle.value
-        const content = elements.postContent.value
+        const Title = elements.postTitle.value
+        const Content = elements.postContent.value
 
         const form = e.currentTarget 
 
         try { 
             //await return result/error of the promise returned by addNewPost
-            await addNewPost({title, content, user:userID}).unwrap()
+            await addNewPost({Title, Content, UserID}).unwrap()
             form.reset()
         } catch (err) {
             console.error('Failed to save the post: ', err)
+            form.reset()
         }
     }
   

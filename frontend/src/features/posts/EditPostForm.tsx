@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import {postUpdated, selectPostById} from './postSlice'
+// import {postUpdated, selectPostById} from './postSlice'
 import { useGetPostQuery,useEditPostMutation } from '@/api/apiSlice'
 
 interface EditPostFormFields extends HTMLFormControlsCollection{
@@ -35,13 +35,22 @@ export const EditPostForm = () => {
     const onSavePostClicked = async(e: React.FormEvent<AddPostFormElements>) => {
         e.preventDefault()
         const {elements} = e.currentTarget
-        const title = elements.postTitle.value
-        const content = elements.postContent.value
+        const Title = elements.postTitle.value
+        const Content = elements.postContent.value
 
 
-        if (title && content && postId) {
-            await(updatePost({id:post.id, title, content}))
-            navigate(`/posts/${postId}`)
+        if (Title && Content && postId) {
+            try {
+                await(updatePost({ID:post.ID, Title, Content})).unwrap()
+                console.log("Post updated")
+                navigate(`/posts/${postId}`)
+            }
+            catch (err) {
+                console.error('Failed to save the post: ', err)
+                // reflect the error in the UI somehow later
+            }
+
+
         }
     }
         return (
@@ -53,14 +62,14 @@ export const EditPostForm = () => {
                 type="text"
                 id="postTitle"
                 name="postTitle"
-                defaultValue={post.title}
+                defaultValue={post.Title}
                 required
                 />
                 <label htmlFor="postContent">Content:</label>
                 <textarea
                 id="postContent"
                 name="postContent"
-                defaultValue={post.content}
+                defaultValue={post.Content}
                 required
                 />
         

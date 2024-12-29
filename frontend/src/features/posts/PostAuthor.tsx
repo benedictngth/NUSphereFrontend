@@ -7,5 +7,5 @@ interface PostAuthorProps {
 
 export const PostAuthor = ({ userId } : PostAuthorProps) => {
     const author = useAppSelector(state => selectUserById(state, userId));
-    return <Typography variant="body2" component="span">by {author ? author.name : 'Unknown author'}</Typography>;
+    return <Typography variant="body2" component="span">by {author ? author.Username : 'Unknown author'}</Typography>;
 }

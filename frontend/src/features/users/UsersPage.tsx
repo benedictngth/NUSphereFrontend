@@ -15,7 +15,7 @@ const selectpostsForUser = createSelector(
     //output selector selects posts for a specific userId
     //first argument is the result of the first input selector : res.data
     //second argument is the second argument of the output selector: userId
-    (data,userId) => data?.filter((post) => post.user === userId)
+    (data,userId) => data?.filter((post) => post.UserID === userId)
 )
 
 export const UserPage = () => {

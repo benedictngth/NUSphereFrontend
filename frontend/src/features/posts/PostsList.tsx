@@ -23,9 +23,11 @@ export const PostsList = () => {
         refetch
     } = useGetPostsQuery()
 
+    console.log(posts);
+
     const sortedPosts = useMemo(() => {
         const sortedPosts = posts.slice()
-        sortedPosts.sort((a,b) => b.date.localeCompare(a.date))
+        sortedPosts.sort((a,b) => b.CreatedAt.localeCompare(a.CreatedAt))
         return sortedPosts
     }, [posts])
 
@@ -35,7 +37,7 @@ export const PostsList = () => {
       content = <Spinner text="Loading..." />
     } else if (isSuccess) {
         const renderedPosts = sortedPosts.map((post) => (
-            <PostExcerpt key={post.id} post={post} />
+            <PostExcerpt key={post.ID} post={post} />
         ))
     const containerClassname = classnames('posts-container', {
         disabled:isFetching})

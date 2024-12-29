@@ -17,17 +17,16 @@ export const apiSlice = createApi({
                 'Post', 
                 //results argument comes from success API response data
                 //create array of tags for each post id to be invalidated
-                ...result.map(({id}) => ({type: 'Post', id}) as const)
+                ...result.map(({ID}) => ({type: 'Post', ID}) as const)
             ]
         }),
         getPost : builder.query<Post, string>({
             query :postId => `/posts/${postId}`,
-            providesTags: (result, error, arg) => [{type: 'Post', id: arg}]
+            providesTags: (result, error, arg) => [{type: 'Post', ID: arg}]
         }),
         addNewPost : builder.mutation<Post, NewPost>({
             query : initialPost => ({
-                //url will be /fakeApi/posts
-                url : '/posts',
+                url : '/posts/create',
                 method : 'POST',
                 body : initialPost
             }),
@@ -36,11 +35,12 @@ export const apiSlice = createApi({
         }),
         editPost : builder.mutation<Post, PostUpdate>({
             query : post => ({
-                url : `/posts/${post.id}`,
-                method : 'PATCH',
+                url : `/posts/edit/${post.ID}`,
+                method : 'PUT',
                 body : post
             }),
-            invalidatesTags : (result, error, arg) => [{type:'Post', id: arg.id}]
+            //invalidates cache (ID) for the single post that was edited
+            invalidatesTags : (result, error, arg) => [{type:'Post', ID: arg.ID}]
         }),
         getUsers : builder.query<User[], void>({
             query :() => '/users',

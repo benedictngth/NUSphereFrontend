@@ -10,7 +10,7 @@ import (
 )
 
 type PostsService interface {
-	CreatePost(ctx context.Context, post NewPost) error
+	CreatePost(ctx context.Context, Title, Content, UserID string) error
 	GetPosts(ctx context.Context) ([]Post, error)
 	GetPostByPublicID(ctx context.Context, publicID string) (Post, error)
 	EditPostByPublicID(ctx context.Context, publicID, title, content string) error
@@ -23,7 +23,7 @@ func NewPostsService() *postsService {
 	return &postsService{}
 }
 
-func (s *postsService) CreatePost(c context.Context, newPost NewPost) error {
+func (s *postsService) CreatePost(c context.Context, Title, Content, UserID string) error {
 	//generate a new post id
 	nanoid, err := gonanoid.New()
 	if err != nil {
@@ -32,9 +32,9 @@ func (s *postsService) CreatePost(c context.Context, newPost NewPost) error {
 	}
 	post := Post{
 		ID:      nanoid,
-		Title:   newPost.Title,
-		Content: newPost.Content,
-		UserID:  newPost.UserID,
+		Title:   Title,
+		Content: Content,
+		UserID:  UserID,
 	}
 	return CreatePost(common.GetDB(), c, post)
 

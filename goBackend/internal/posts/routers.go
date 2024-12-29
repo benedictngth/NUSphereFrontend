@@ -3,8 +3,8 @@ package posts
 import (
 	// "errors"
 	"context"
-	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,25 +16,16 @@ func Posts(router *gin.RouterGroup, postsService PostsService) {
 	router.PUT("/edit/:id", EditPostByPublicIDHandler(postsService))
 }
 
-type NewPostRequest struct {
-	NewPost NewPost `json:"post" binding:"required"`
-}
-
-type EditPostRequest struct {
-	//not sure what the actual json key should be to unpackage request from client side
-	EditPost EditPost `json:"post" binding:"required"`
-}
-
 func CreatePostHandler(postsService PostsService) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		time.Sleep(1 * time.Second)
 		var req NewPostRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			log.Print(c)
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
 			return
 		}
 		//insert post into db
-		err := postsService.CreatePost(context.Background(), req.NewPost)
+		err := postsService.CreatePost(context.Background(), req.Title, req.Content, req.UserID)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "post creation failed"})
@@ -46,18 +37,20 @@ func CreatePostHandler(postsService PostsService) gin.HandlerFunc {
 
 func GetPostsHandler(postsService PostsService) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		time.Sleep(1 * time.Second)
 		posts, err := postsService.GetPosts(context.Background())
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get posts"})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"posts": posts})
+		c.JSON(http.StatusOK, posts)
 	}
 }
 
 func GetPostByIDHandler(postsService PostsService) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		time.Sleep(1 * time.Second)
 		publicID := c.Param("id")
 		//get post by public id
 		post, err := postsService.GetPostByPublicID(context.Background(), publicID)
@@ -66,12 +59,13 @@ func GetPostByIDHandler(postsService PostsService) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get post"})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"post": post})
+		c.JSON(http.StatusOK, post)
 	}
 }
 
 func EditPostByPublicIDHandler(postsService PostsService) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		time.Sleep(1 * time.Second)
 		publicID := c.Param("id")
 		var req EditPostRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -79,7 +73,7 @@ func EditPostByPublicIDHandler(postsService PostsService) gin.HandlerFunc {
 			return
 		}
 		//edit post by public id
-		err := postsService.EditPostByPublicID(context.Background(), publicID, req.EditPost.Title, req.EditPost.Content)
+		err := postsService.EditPostByPublicID(context.Background(), publicID, req.Title, req.Content)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to edit post"})

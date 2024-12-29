@@ -1,5 +1,5 @@
 import { createSlice, createEntityAdapter, createSelector } from '@reduxjs/toolkit'
-import {client} from '@/api/client'
+
 
 import type { RootState } from '@/app/store'
 import { createAppAsyncThunk } from '@/app/withTypes'
@@ -15,10 +15,10 @@ export interface User {
 // const initialState = usersAdapter.getInitialState()
 
 //string, "payload creator" with a Promise containing data / rejected Promise
-export const fetchUsers = createAppAsyncThunk('users/fetchUsers', async () => {
-    const response = await client.get<User[]>('/fakeApi/users')
-    return response.data
-})
+// export const fetchUsers = createAppAsyncThunk('users/fetchUsers', async () => {
+//     const response = await client.get<User[]>('/fakeApi/users')
+//     return response.data
+// })
 
 
 // const usersSlice = createSlice({
