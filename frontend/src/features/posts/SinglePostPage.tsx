@@ -12,7 +12,7 @@ export const SinglePostPage = () => {
 
     let content :React.ReactNode;
 
-    const canEdit = currentUser?.ID  ===post?.UserID;
+    const canEdit = currentUser?.id  ===post?.UserID;
     if (isFetching) {
         content = <Spinner text="Loading..." />;
     }else if (isSuccess){

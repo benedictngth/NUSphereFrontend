@@ -6,6 +6,7 @@ import { selectAllUsers} from '@/features/users/usersSlice'
 
 
 import {userLoggedIn} from './authSlice'
+import { useGetUsersQuery } from '../users/usersSlice'
 
 interface LoginPageFormFields extends HTMLFormControlsCollection {
     username : HTMLInputElement
@@ -29,7 +30,7 @@ export const LoginPage = () => {
     }
     console.log(users);
     const userOptions = users.map(user => (
-        <option key={user.ID} value={user.ID}>
+        <option key={user.id} value={user.id}>
             {user.Username}
         </option>
     ))

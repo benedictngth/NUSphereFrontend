@@ -42,9 +42,6 @@ export const apiSlice = createApi({
             //invalidates cache (ID) for the single post that was edited
             invalidatesTags : (result, error, arg) => [{type:'Post', ID: arg.ID}]
         }),
-        getUsers : builder.query<User[], void>({
-            query :() => '/users',
-        })
 
 
 })
@@ -55,7 +52,6 @@ export const {
     useGetPostQuery,
     useAddNewPostMutation, 
     useEditPostMutation,
-    useGetUsersQuery,
 } = apiSlice;
 
 
