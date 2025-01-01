@@ -5,6 +5,8 @@ import { useAppDispatch,useAppSelector } from '@/app/hooks'
 import { userLoggedOut } from '@/features/auth/authSlice'
 import { UserIcon } from './UserIcon'
 import { selectCurrentUser } from '@/features/users/usersSlice'
+import { Typography } from '@mui/material'
+import AppBar from './AppBarMUI'
 
 export const Navbar = () => {
   const dispatch = useAppDispatch()
@@ -30,7 +32,7 @@ export const Navbar = () => {
   return (
     <nav>
       <section>
-        <h1>Redux Essentials Example</h1>
+        <Typography variant="h1" component="h1">NUSphere</Typography>
         {navContent}
       </section>
     </nav>
@@ -38,11 +40,6 @@ export const Navbar = () => {
 }
 
 return (
-  <nav>
-    <section>
-      <h1>Redux Essentials Example</h1>
-      {navContent}
-    </section>
-  </nav>
+  <AppBar />
 )
 }
