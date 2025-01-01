@@ -17,7 +17,7 @@ func Users(router *gin.RouterGroup, authService AuthService) {
 	router.POST("/register", RegisterHandler(authService))
 	router.POST("/login", LoginHandler(authService))
 	router.GET("/cookie", GetCookieHandler(authService))
-	router.GET("/deleteCookie", DeleteCookieHandler(authService))
+	router.GET("/logout", LogoutHandler(authService))
 }
 func GetCookieHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -30,10 +30,10 @@ func GetCookieHandler(authService AuthService) gin.HandlerFunc {
 	}
 }
 
-func DeleteCookieHandler(authService AuthService) gin.HandlerFunc {
+func LogoutHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.SetCookie("Authorisation", "", -1, "/", "localhost", false, true)
-		c.JSON(http.StatusOK, gin.H{"cookie": "deleted"})
+		c.JSON(http.StatusOK, gin.H{"cookie": "deleted", "message": "logged out"})
 	}
 }
 

@@ -20,6 +20,7 @@ func UpdateContextUserModel(c *gin.Context, my_user_id, my_username string) {
 
 func AuthMiddleware(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		//get the token from the cookie Authorisation
 		tokenString, err := c.Cookie("Authorisation")
 		if err != nil || tokenString == "" {
 			log.Print("token string: ", tokenString)
