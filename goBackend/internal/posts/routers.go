@@ -14,6 +14,7 @@ func Posts(router *gin.RouterGroup, postsService PostsService) {
 	router.GET("", GetPostsHandler(postsService))
 	router.GET("/:id", GetPostByIDHandler(postsService))
 	router.PUT("/edit/:id", EditPostByPublicIDHandler(postsService))
+	router.DELETE("/delete/:id", DeletePostByPublicIDHandler(postsService))
 }
 
 func CreatePostHandler(postsService PostsService) gin.HandlerFunc {
@@ -80,5 +81,20 @@ func EditPostByPublicIDHandler(postsService PostsService) gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"message": "post edited"})
+	}
+}
+
+func DeletePostByPublicIDHandler(postsService PostsService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		time.Sleep(1 * time.Second)
+		publicID := c.Param("id")
+		//delete post by public id
+		err := postsService.DeletePostByPublicID(context.Background(), publicID)
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to delete post"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"message": "post deleted"})
 	}
 }

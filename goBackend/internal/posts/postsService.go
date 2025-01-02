@@ -14,6 +14,7 @@ type PostsService interface {
 	GetPosts(ctx context.Context) ([]Post, error)
 	GetPostByPublicID(ctx context.Context, publicID string) (Post, error)
 	EditPostByPublicID(ctx context.Context, publicID, title, content string) error
+	DeletePostByPublicID(ctx context.Context, publicID string) error
 }
 
 type postsService struct {
@@ -58,4 +59,8 @@ func (s *postsService) EditPostByPublicID(c context.Context, publicID, title, co
 	post.Title = title
 	post.Content = content
 	return EditPostByPublicID(common.GetDB(), c, publicID, post)
+}
+
+func (s *postsService) DeletePostByPublicID(c context.Context, publicID string) error {
+	return DeletePostByPublicID(common.GetDB(), c, publicID)
 }

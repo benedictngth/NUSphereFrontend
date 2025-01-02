@@ -79,3 +79,12 @@ func EditPostByPublicID(pg *common.Postgres, ctx context.Context, publicID strin
 	}
 	return nil
 }
+
+func DeletePostByPublicID(pg *common.Postgres, ctx context.Context, publicID string) error {
+	query := `DELETE FROM posts WHERE public_id = $1`
+	_, err := pg.DB.Exec(ctx, query, publicID)
+	if err != nil {
+		return fmt.Errorf("unable to delete row: %w", err)
+	}
+	return nil
+}

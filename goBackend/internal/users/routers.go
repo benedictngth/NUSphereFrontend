@@ -111,7 +111,8 @@ func LoginHandler(authService AuthService) gin.HandlerFunc {
 			return
 		}
 		log.Print("generated token string: ", token)
-		c.SetCookie("Authorisation", fmt.Sprintf("Bearer %v", token), 3600, "/", "localhost", false, true)
+		//persist token in cookie for 24 hours
+		c.SetCookie("Authorisation", fmt.Sprintf("Bearer %v", token), 60*60*24, "/", "localhost", false, true)
 		c.JSON(http.StatusOK, gin.H{"username": req.Username})
 	}
 }
