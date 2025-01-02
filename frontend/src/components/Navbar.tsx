@@ -2,26 +2,35 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { useAppDispatch,useAppSelector } from '@/app/hooks'
-import { userLoggedOut } from '@/features/auth/authSlice'
 import { UserIcon } from './UserIcon'
-import { selectCurrentUser } from '@/features/users/usersSlice'
 import { Typography } from '@mui/material'
 import AppBar from './AppBarMUI'
+import { useNavigate } from 'react-router-dom'
+
+import { useLogoutMutation, useCheckAuthQuery, TokenRequest } from '@/features/auth/authSlice'
 
 export const Navbar = () => {
   const dispatch = useAppDispatch()
-  const user = useAppSelector(selectCurrentUser)
-  const isLoggedIn = !!user // !! converts user to a boolean
-  console.log(isLoggedIn)
+  const navigate = useNavigate()
+  const {
+    data : TokenRequest,
+    isError,
+    error
+  } = useCheckAuthQuery()
+  const [logout, {isLoading}] = useLogoutMutation()
+
+  
   let navContent : React.ReactNode=null
-  if (isLoggedIn) {
+  if (TokenRequest === "authSuccess") {
     const onLogoutClicked = () => {
-      dispatch(userLoggedOut())
+      logout()
+      navigate('/login')
+
     }
     const navContent = (
       <div className = "navContent">
         <div className="navLinks">
-          <Link to="/">Posts</Link>
+          <Link to="/posts">Posts</Link>
         </div>
         <div className = "userDetails">
           <UserIcon size={32} />

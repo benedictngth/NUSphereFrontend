@@ -1,13 +1,4 @@
-import { createSlice,PayloadAction,createEntityAdapter,EntityState } from "@reduxjs/toolkit";
-// import {client} from "@/api/client";
-import { nanoid } from "nanoid";
-import {sub} from "date-fns";
-
-import type { RootState } from "@/app/store";
 import { AppStartListening } from "@/app/listernerMiddleware";
-import { createAppAsyncThunk } from "@/app/withTypes";
-
-import { userLoggedOut } from "@/features/auth/authSlice";
 import { apiSlice } from "@/api/apiSlice";
 
 
@@ -20,7 +11,8 @@ interface Reactions {
 }
 export type ReactionName = keyof Reactions
 
-//user here refers to userID
+
+//user interface for each individual post
 export interface Post {
     ID :string;
     Title: string;
@@ -28,26 +20,15 @@ export interface Post {
     CreatedAt :string,
     UpdatedAt :string,
     UserID : string;
-    // reactions : Reactions
 }
 
-interface PostsState extends EntityState<Post,string> {
-    status : 'idle' | 'pending' | 'succeeded' | 'failed';
-    error : string | null;
-}
 
 //create type alias based on Post interface
 export type PostUpdate = Pick<Post, 'ID' | 'Title' | 'Content'>
 export type NewPost = Pick<Post, 'Title' | 'Content' | 'UserID'>
 
-const initialReactions: Reactions = {
-    thumbsUp: 0,
-    tada: 0,
-    heart: 0,
-    rocket: 0,
-    eyes: 0
-  }
 
+//side effect listener (react toast)for adding new post
 export const addPostsListeners = (startAppListening: AppStartListening) => {
     startAppListening({
       matcher :apiSlice.endpoints.addNewPost.matchFulfilled,
@@ -56,7 +37,7 @@ export const addPostsListeners = (startAppListening: AppStartListening) => {
   
         const toastId = toast.show('New post added!', {
           variant: 'success',
-          position: 'bottom-right',
+          position: 'top-right',
           pause: true
         })
   

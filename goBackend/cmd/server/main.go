@@ -38,6 +38,7 @@ func main() {
 	posts.Posts(v1.Group("/posts"), postService)
 	v1.Use(users.AuthMiddleware(cfg.JWTSecret))
 	users.Profile(v1.Group("/users"))
+	users.AuthUsers(v1.Group("/users"), authService)
 
 	port := cfg.Port
 	if port == "" {

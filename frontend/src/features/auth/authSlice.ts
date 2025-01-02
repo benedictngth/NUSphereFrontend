@@ -1,27 +1,79 @@
-import { RootState } from '@/app/store'
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import { apiSlice } from '@/api/apiSlice'
 
-interface AuthState {
-    username :string | null
+// interface AuthState {
+//     username :string | null
+//     // isAuthenticated :boolean
+// }
+
+interface LoginResponse {
+    username :string
 }
 
-const initialState :AuthState = {
-    username :null
+interface LoginRequest {
+    username :string
+    password :string
+
 }
 
-const authSlice = createSlice({
-    name : 'auth',
-    initialState,
-    reducers : {
-        userLoggedIn(state,action : PayloadAction<string>){
-            state.username = action.payload
-        },
-        userLoggedOut(state){
-            state.username = null
-        }   
-    }
+export interface TokenRequest {
+    token :string
+}
+
+export interface AuthUser  {
+    id : string,
+    username : string
+}
+
+const apiSliceWithAuth = apiSlice.injectEndpoints({
+    endpoints : (builder) => ({
+        login : builder.mutation<LoginResponse,LoginRequest>({
+            query : loginResponse => ({
+                url : '/users/login',
+                method : 'POST',
+                body :loginResponse
+            }),
+            invalidatesTags: ['Auth','User'],
+            transformResponse : (response :LoginResponse) => {
+                console.log(response)
+                return response
+            }
+        }),
+        logout :builder.mutation<void, void>({
+            query : () => ({
+                url: '/users/logout',
+                method : 'POST'
+            }),
+            invalidatesTags : ['Auth', 'User'],
+        }),
+        //check whether they are auth cookies in browser
+        checkAuth: builder.query<string, void>({
+            query : () => ({
+                url: '/users/cookie',
+                method : 'GET'
+            }),
+            providesTags : ['Auth'],
+            transformResponse : (response :string) => {
+                console.log(response)
+                return response
+            }
+        }),
+        getCurrentUser : builder.query<AuthUser, void>({
+            query : () => ({
+                url : '/users/authUser',
+                method : 'GET'
+            }),
+            providesTags : ['User'],
+            transformResponse : (response :AuthUser) => {
+                console.log(response)
+                return response
+            }
+        }),
+    })
 })
 
-export const {userLoggedIn,userLoggedOut} = authSlice.actions
-export const selectCurrentUsername = (state : RootState) => state.auth.username
-export default authSlice.reducer
+export const {
+    useLoginMutation, 
+    useLogoutMutation, 
+    useCheckAuthQuery,
+    useGetCurrentUserQuery
+} = apiSliceWithAuth

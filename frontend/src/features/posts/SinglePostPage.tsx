@@ -1,13 +1,13 @@
 import {Link, useParams} from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
 import { useGetPostQuery } from '@/api/apiSlice';
-import { selectCurrentUser } from '../users/usersSlice';
 import { Spinner } from '@/components/Spinner';
+import { useGetCurrentUserQuery } from '../auth/authSlice';
 
 export const SinglePostPage = () => {
     const { postId } = useParams<{ postId: string }>();
+    const {data : currentUser} = useGetCurrentUserQuery();
 
-    const currentUser = useAppSelector(selectCurrentUser);
     const {data : post, isFetching, isSuccess} = useGetPostQuery(postId!);
 
     let content :React.ReactNode;

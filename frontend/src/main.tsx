@@ -7,7 +7,7 @@ import App from './App'
 // import { worker } from './api/server'
 import {store} from '@/app/store'
 // import { fetchUsers } from './features/users/usersSlice'
-import { apiSliceWithUsers } from './features/users/usersSlice'
+// import { apiSliceWithUsers } from './features/users/usersSlice'
 
 import './primitiveui.css'
 import './index.css'
@@ -26,7 +26,7 @@ declare global {
 
 function app() {
   //dispatch the getUsers thunk
-  store.dispatch(apiSliceWithUsers.endpoints.getUsers.initiate())
+  // store.dispatch(apiSliceWithUsers.endpoints.getUsers.initiate())
   window.apiSlice = apiSlice;
 
   const theme = createTheme(lightTheme);

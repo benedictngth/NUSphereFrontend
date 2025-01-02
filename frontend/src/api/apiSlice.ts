@@ -1,15 +1,17 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
-import type { Post, NewPost, PostUpdate} from '@/features/posts/postSlice';
-import type { User } from '@/features/users/usersSlice';
+import type { Post, NewPost, PostUpdate} from '@/features/posts/postUtils';
 export type {Post};
 
 //define single API slice object
 export const apiSlice = createApi({
     reducerPath: 'api',
 
-    baseQuery: fetchBaseQuery({baseUrl: '/api'}),
-    tagTypes: ['Post'],
+    baseQuery: fetchBaseQuery({
+        baseUrl: '/api',
+        credentials: 'include'
+    }),
+    tagTypes: ['Post', 'Auth', 'User'],
     endpoints : builder => ({
         getPosts :builder.query<Post[],void>({
             query: () => '/posts',

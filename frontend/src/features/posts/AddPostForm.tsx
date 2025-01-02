@@ -2,10 +2,10 @@ import React , {useState} from 'react'
 import {nanoid} from '@reduxjs/toolkit'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 // import {addNewPost} from '@/features/posts/postSlice'
-import { selectAllUsers } from '../users/usersSlice'
-import { selectCurrentUsername } from '../auth/authSlice'
 import { useAddNewPostMutation } from '@/api/apiSlice'
-import { Input, TextField, Button} from '@mui/material'
+import { Button, TextField, Input } from '@mui/material'
+
+import { useGetCurrentUserQuery } from '../auth/authSlice'
 
 // TS types for the input fields
 // See: https://epicreact.dev/how-to-type-a-react-form-on-submit-handler/
@@ -21,9 +21,9 @@ interface AddPostFormElements extends HTMLFormElement {
 export const AddPostForm = () => {
     //trigger function, object with metadata about the request
     const [addNewPost, {isLoading}] = useAddNewPostMutation()
-    const dispatch = useAppDispatch()
-    const UserID = useAppSelector(selectCurrentUsername)!
-    // console.log(userID)
+    // to be replaced with the current user ID
+    const {data : currentUser} = useGetCurrentUserQuery()
+    console.log(currentUser?.id)
     const handleSubmit = async (e: React.FormEvent<AddPostFormElements>) => {
         // Prevent server submission
         e.preventDefault()
@@ -35,8 +35,8 @@ export const AddPostForm = () => {
         const form = e.currentTarget 
 
         try { 
-            //await return result/error of the promise returned by addNewPost
-            await addNewPost({Title, Content, UserID}).unwrap()
+            // await return result/error of the promise returned by addNewPost
+            await addNewPost({Title, Content, UserID: currentUser?.id!}).unwrap()
             form.reset()
         } catch (err) {
             console.error('Failed to save the post: ', err)

@@ -82,7 +82,9 @@ JWT_SECRET=[your-secret-key]
 - POST /api/users/register - Register new user
 - POST /api/users/login - User login
 - GET /api/users - Get all users
-- Posts
+
+### Posts
+
 - GET /api/posts - Get all posts
 - GET /api/posts/:id - Get single post
 - POST /api/posts/create - Create new post

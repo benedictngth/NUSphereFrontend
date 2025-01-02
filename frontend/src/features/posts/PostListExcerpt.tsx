@@ -1,5 +1,5 @@
 import { Box, styled, Typography } from "@mui/material";
-import { Post } from "./postSlice"
+import { Post } from "./postUtils"
 import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
 import { PostAuthor } from "./PostAuthor";

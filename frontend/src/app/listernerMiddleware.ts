@@ -2,7 +2,7 @@ import {createListenerMiddleware, addListener} from '@reduxjs/toolkit'
 import { RootState, AppDispatch } from './store'
 import { useAppDispatch } from './hooks'
 
-import { addPostsListeners } from '@/features/posts/postSlice'
+import { addPostsListeners } from '@/features/posts/postUtils'
 
 export const listenerMiddleware = createListenerMiddleware()
 

@@ -58,6 +58,7 @@ func AuthMiddleware(secret string) gin.HandlerFunc {
 		userID := (claims["user_id"]).(string)
 		username := (claims["username"]).(string)
 		UpdateContextUserModel(c, userID, username)
-	}
 
+		c.Next()
+	}
 }

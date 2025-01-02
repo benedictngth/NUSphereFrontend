@@ -6,7 +6,8 @@ import { BrowserRouter as Router,
 import {ToastContainer} from 'react-tiny-toast'
 
 import { useAppSelector } from './app/hooks'
-import { selectCurrentUsername } from './features/auth/authSlice'
+
+import {ProtectedRoute} from '@/components/ProtectedRoute'
 
 import { Navbar } from './components/Navbar'
 import {LoginPage} from './features/auth/LoginPage'
@@ -16,13 +17,7 @@ import {PostsMainPage} from './features/posts/PostsMainPage'
 import {SinglePostPage} from './features/posts/SinglePostPage'
 import { EditPostForm } from './features/posts/EditPostForm'
 
-const ProtectedRoute = ({children} : {children : React.ReactNode}) => {
-  const username = useAppSelector(selectCurrentUsername)
-  if(!username){
-      return <Navigate to = "/login" />
-  }
-  return <>{children}</>
-}
+
 
 function App() {
   return (
@@ -31,16 +26,18 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          
           <Route 
             path="/*"
             element={
               <ProtectedRoute>
                 <Routes>
-                  <Route path="/" element={<PostsMainPage />} />
-                  {/* params of :postId */}
-                  <Route path="/posts/:postId" element={<SinglePostPage />} />
-                  <Route path="/editPost/:postId" element={<EditPostForm />} />
-                </Routes>
+                    <Route path="/" element={<Navigate replace to="/posts" />} />
+                    <Route path="/posts" element={<PostsMainPage />} />
+                    {/* params of :postId */}
+                    <Route path="/posts/:postId" element={<SinglePostPage />} />
+                    <Route path="/editPost/:postId" element={<EditPostForm />} />
+                  </Routes>
               </ProtectedRoute>
             }
           />

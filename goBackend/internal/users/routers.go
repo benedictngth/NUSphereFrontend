@@ -13,20 +13,38 @@ import (
 )
 
 func Users(router *gin.RouterGroup, authService AuthService) {
-	router.GET("", GetUsersHandler(authService))
 	router.POST("/register", RegisterHandler(authService))
 	router.POST("/login", LoginHandler(authService))
 	router.GET("/cookie", GetCookieHandler(authService))
-	router.GET("/logout", LogoutHandler(authService))
+	router.POST("/logout", LogoutHandler(authService))
+	router.GET("", GetUsersHandler(authService))
 }
-func GetCookieHandler(authService AuthService) gin.HandlerFunc {
+
+func AuthUsers(router *gin.RouterGroup, authService AuthService) {
+	router.GET("/authUser", GetAuthUserHandler(authService))
+}
+
+func GetAuthUserHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		cookie, err := c.Cookie("Authorisation")
-		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{"error": "cookie not found"})
+		userId, userIdExists := c.Get("user_id")
+		username, userNameExists := c.Get("username")
+		if !userIdExists || !userNameExists {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "auth user not found"})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"cookie": cookie})
+		c.JSON(http.StatusOK, gin.H{"id": userId, "username": username})
+	}
+}
+
+func GetCookieHandler(authService AuthService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		_, err := c.Cookie("Authorisation")
+		log.Print(err)
+		if err != nil {
+			c.JSON(http.StatusOK, "error")
+			return
+		}
+		c.JSON(http.StatusOK, "authSuccess")
 	}
 }
 
@@ -94,7 +112,7 @@ func LoginHandler(authService AuthService) gin.HandlerFunc {
 		}
 		log.Print("generated token string: ", token)
 		c.SetCookie("Authorisation", fmt.Sprintf("Bearer %v", token), 3600, "/", "localhost", false, true)
-		c.JSON(http.StatusOK, "logged in")
+		c.JSON(http.StatusOK, gin.H{"username": req.Username})
 	}
 }
 

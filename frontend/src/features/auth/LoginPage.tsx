@@ -2,14 +2,16 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useAppDispatch,useAppSelector } from '@/app/hooks'
-import { selectAllUsers} from '@/features/users/usersSlice'
+// import { selectAllUsers} from '@/features/users/usersSlice'
+import { useLoginMutation, useCheckAuthQuery } from './authSlice'
 
 
-import {userLoggedIn} from './authSlice'
-import { useGetUsersQuery } from '../users/usersSlice'
+
+import { TextField, Button } from '@mui/material'
 
 interface LoginPageFormFields extends HTMLFormControlsCollection {
     username : HTMLInputElement
+    password : HTMLInputElement
 }
 
 interface LoginPageFormElements extends HTMLFormElement {
@@ -17,33 +19,50 @@ interface LoginPageFormElements extends HTMLFormElement {
 }
 
 export const LoginPage = () => {
-    const dispatch = useAppDispatch()
-    const users = useAppSelector(selectAllUsers)
     const navigate = useNavigate()
-
-    const handleSubmit = (e :React.FormEvent<LoginPageFormElements>) => {
+    const [login, {isLoading}] = useLoginMutation()
+    const handleSubmit = async (e :React.FormEvent<LoginPageFormElements>) => {
         e.preventDefault()
         const {elements} = e.currentTarget
+        const form = e.currentTarget
         const username = elements.username.value
-        dispatch(userLoggedIn(username))
-        navigate('/')
+        const password = elements.password.value
+        try {
+            await login({username, password}).unwrap()
+            form.reset()
+            console.log('Login successful')
+            
+            navigate('/posts')
+        }
+        catch (err){
+            console.error('Failed to login: ', err)
+            form.reset()
+        }
+
+        // console.log(username, password);
     }
-    console.log(users);
-    const userOptions = users.map(user => (
-        <option key={user.id} value={user.id}>
-            {user.Username}
-        </option>
-    ))
+    
 
     return (
         <section>
             <h2>Login</h2>
             <form onSubmit = {handleSubmit}>
-                <label htmlFor="username">Username:</label>
-                <select id="username" required>
-                    {userOptions}
-                </select>
-                <button>Login</button>
+                    <TextField
+                    required
+                    variant="outlined"
+                    id="username"
+                    label="Username"
+                    defaultValue=""
+                    />
+
+                    <TextField
+                    required
+                    id="password"
+                    variant="outlined"
+                    label="Password"
+                    defaultValue=""
+                    />
+                <Button variant="contained" type="submit">Login</Button>
             </form>
         </section>
     )
