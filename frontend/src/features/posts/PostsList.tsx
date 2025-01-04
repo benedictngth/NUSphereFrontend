@@ -23,7 +23,6 @@ export const PostsList = () => {
         refetch
     } = useGetPostsQuery()
 
-    console.log(posts);
 
     const sortedPosts = useMemo(() => {
         const sortedPosts = posts.slice()
@@ -45,7 +44,8 @@ export const PostsList = () => {
     } else if (isError) {
       content = <div>{error.toString()}</div>
     }
-
+    
+    console.log(posts);
     return (
         <section className="post-list">
             <h2>Posts</h2>

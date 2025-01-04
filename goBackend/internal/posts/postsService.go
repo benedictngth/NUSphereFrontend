@@ -10,10 +10,10 @@ import (
 )
 
 type PostsService interface {
-	CreatePost(ctx context.Context, Title, Content, UserID string) error
+	CreatePost(ctx context.Context, Title, Content, UserID, CategoryID string) error
 	GetPosts(ctx context.Context) ([]Post, error)
 	GetPostByPublicID(ctx context.Context, publicID string) (Post, error)
-	EditPostByPublicID(ctx context.Context, publicID, title, content string) error
+	EditPostByPublicID(ctx context.Context, publicID, title, content, categoryID string) error
 	DeletePostByPublicID(ctx context.Context, publicID string) error
 }
 
@@ -24,7 +24,7 @@ func NewPostsService() *postsService {
 	return &postsService{}
 }
 
-func (s *postsService) CreatePost(c context.Context, Title, Content, UserID string) error {
+func (s *postsService) CreatePost(c context.Context, Title, Content, UserID, CategoryID string) error {
 	//generate a new post id
 	nanoid, err := gonanoid.New()
 	if err != nil {
@@ -32,10 +32,11 @@ func (s *postsService) CreatePost(c context.Context, Title, Content, UserID stri
 		return err
 	}
 	post := Post{
-		ID:      nanoid,
-		Title:   Title,
-		Content: Content,
-		UserID:  UserID,
+		ID:         nanoid,
+		Title:      Title,
+		Content:    Content,
+		UserID:     UserID,
+		CategoryID: CategoryID,
 	}
 	return CreatePost(common.GetDB(), c, post)
 
@@ -49,7 +50,7 @@ func (s *postsService) GetPostByPublicID(c context.Context, publicID string) (Po
 	return GetPostByPublicID(common.GetDB(), c, publicID)
 }
 
-func (s *postsService) EditPostByPublicID(c context.Context, publicID, title, content string) error {
+func (s *postsService) EditPostByPublicID(c context.Context, publicID, title, content, categoryID string) error {
 	//get post with publicID
 	post, err := GetPostByPublicID(common.GetDB(), c, publicID)
 	if err != nil {
@@ -58,6 +59,7 @@ func (s *postsService) EditPostByPublicID(c context.Context, publicID, title, co
 	//update title and content
 	post.Title = title
 	post.Content = content
+	post.CategoryID = categoryID
 	return EditPostByPublicID(common.GetDB(), c, publicID, post)
 }
 

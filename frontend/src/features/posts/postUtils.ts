@@ -20,12 +20,13 @@ export interface Post {
     CreatedAt :string,
     UpdatedAt :string,
     UserID : string;
+    CategoryID : string;
 }
 
 
 //create type alias based on Post interface
-export type PostUpdate = Pick<Post, 'ID' | 'Title' | 'Content'>
-export type NewPost = Pick<Post, 'Title' | 'Content' | 'UserID'>
+export type PostUpdate = Pick<Post, 'ID' | 'Title' | 'Content' | 'CategoryID'>
+export type NewPost = Pick<Post, 'Title' | 'Content' | 'UserID' | 'CategoryID'>
 export type DeletePost = Pick<Post, 'ID'>
 
 

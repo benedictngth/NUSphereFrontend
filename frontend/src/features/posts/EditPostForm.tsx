@@ -4,10 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 // import {postUpdated, selectPostById} from './postSlice'
 import { useGetPostQuery,useEditPostMutation } from '@/api/apiSlice'
+import { useGetCategoriesQuery } from '@/api/apiSlice'
 
+import { CategoriesEdit } from '../category/CategoryEdit'
 interface EditPostFormFields extends HTMLFormControlsCollection{
     postTitle: HTMLInputElement
     postContent: HTMLTextAreaElement
+    category: HTMLSelectElement
 }
 interface AddPostFormElements extends HTMLFormElement {
     readonly elements: EditPostFormFields
@@ -18,7 +21,6 @@ export const EditPostForm = () => {
     const {postId} = useParams<{postId:string}>()
     console.log(postId)
     const {data : post} = useGetPostQuery(postId!)
-
     const [updatePost, {isLoading}] = useEditPostMutation();
     
     const dispatch = useAppDispatch()
@@ -37,11 +39,12 @@ export const EditPostForm = () => {
         const {elements} = e.currentTarget
         const Title = elements.postTitle.value
         const Content = elements.postContent.value
+        const CategoryID = elements.category.value
 
 
         if (Title && Content && postId) {
             try {
-                await(updatePost({ID:post.ID, Title, Content})).unwrap()
+                await(updatePost({ID:post.ID, Title, Content, CategoryID})).unwrap()
                 console.log("Post updated")
                 navigate(`/posts/${postId}`)
             }
@@ -65,6 +68,7 @@ export const EditPostForm = () => {
                 defaultValue={post.Title}
                 required
                 />
+                <CategoriesEdit defaultValue={post.CategoryID} />
                 <label htmlFor="postContent">Content:</label>
                 <textarea
                 id="postContent"

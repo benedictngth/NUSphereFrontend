@@ -16,12 +16,12 @@ func Users(router *gin.RouterGroup, authService AuthService) {
 	router.POST("/register", RegisterHandler(authService))
 	router.POST("/login", LoginHandler(authService))
 	router.GET("/cookie", GetCookieHandler(authService))
-	router.POST("/logout", LogoutHandler(authService))
 	router.GET("", GetUsersHandler(authService))
 }
 
 func AuthUsers(router *gin.RouterGroup, authService AuthService) {
 	router.GET("/authUser", GetAuthUserHandler(authService))
+	router.POST("/logout", LogoutHandler(authService))
 }
 
 func GetAuthUserHandler(authService AuthService) gin.HandlerFunc {

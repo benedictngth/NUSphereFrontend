@@ -10,5 +10,5 @@ export const PostAuthor = ({ userId } : PostAuthorProps) => {
     const { data: authors } = useGetUsersQuery()
 
     const author = authors?.find((author) => author.ID === userId)
-    return <Typography variant="body2" component="span">by {author ? author.Username : 'Unknown author'}</Typography>;
+    return <Typography variant="body2" component="p">by {author ? author.Username : 'Unknown author'}</Typography>;
 }

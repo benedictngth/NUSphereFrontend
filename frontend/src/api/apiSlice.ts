@@ -1,6 +1,8 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
 import type { Post, NewPost, PostUpdate, DeletePost} from '@/features/posts/postUtils';
+
+import { Category } from '@/features/category/categoryUtil';
 export type {Post};
 
 //define single API slice object
@@ -11,7 +13,7 @@ export const apiSlice = createApi({
         baseUrl: '/api',
         credentials: 'include'
     }),
-    tagTypes: ['Post', 'Auth', 'User'],
+    tagTypes: ['Post', 'Auth', 'User', 'Category'],
     endpoints : builder => ({
         getPosts :builder.query<Post[],void>({
             query: () => '/posts',
@@ -51,6 +53,27 @@ export const apiSlice = createApi({
             }),
             invalidatesTags : ['Post']
         }),
+        getCategories: builder.query<Category[], void>({
+            query: () => '/categories',
+            // transformResponse: (response: Category[]) => {
+            //     console.log(response)
+            //     return response.map(category => ({
+            //         ...category,
+            //         ID: category.ID.toString()
+            //     }))
+            // },
+            providesTags: ['Category']
+        }),
+
+        addCategory: builder.mutation<void, Category>({
+            query: category => ({
+                url: '/categories',
+                method: 'POST',
+                body: category
+            }),
+            invalidatesTags: ['Category']
+        }),
+
 
 
 })
@@ -61,7 +84,8 @@ export const {
     useGetPostQuery,
     useAddNewPostMutation, 
     useEditPostMutation,
-    useDeletePostMutation
+    useDeletePostMutation,
+    useGetCategoriesQuery
 } = apiSlice;
 
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"goBackend/internal/categories"
 	"goBackend/internal/common"
 	"goBackend/internal/config"
 	"goBackend/internal/posts"
@@ -24,10 +25,10 @@ func main() {
 	}
 	defer pool.Close()
 
-	//create repository and services
-
+	//create repository and services structs
 	authService := users.NewAuthService(cfg.JWTSecret)
 	postService := posts.NewPostsService()
+	categoriesService := categories.NewCategoriesService()
 	r := gin.Default()
 	// Attach log request body and recovery middleware
 	r.Use(common.LogRequestBodyMiddleware())
@@ -35,10 +36,13 @@ func main() {
 
 	v1 := r.Group("/api")
 	users.Users(v1.Group("/users"), authService)
-	posts.Posts(v1.Group("/posts"), postService)
+
+	//protected routes with JWT cookie middleware
 	v1.Use(users.AuthMiddleware(cfg.JWTSecret))
+	posts.Posts(v1.Group("/posts"), postService)
 	users.Profile(v1.Group("/users"))
 	users.AuthUsers(v1.Group("/users"), authService)
+	categories.Categories(v1.Group("/categories"), categoriesService)
 
 	port := cfg.Port
 	if port == "" {

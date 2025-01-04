@@ -26,7 +26,7 @@ func CreatePostHandler(postsService PostsService) gin.HandlerFunc {
 			return
 		}
 		//insert post into db
-		err := postsService.CreatePost(context.Background(), req.Title, req.Content, req.UserID)
+		err := postsService.CreatePost(context.Background(), req.Title, req.Content, req.UserID, req.CategoryID)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "post creation failed"})
@@ -74,7 +74,7 @@ func EditPostByPublicIDHandler(postsService PostsService) gin.HandlerFunc {
 			return
 		}
 		//edit post by public id
-		err := postsService.EditPostByPublicID(context.Background(), publicID, req.Title, req.Content)
+		err := postsService.EditPostByPublicID(context.Background(), publicID, req.Title, req.Content, req.CategoryID)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to edit post"})

@@ -6,12 +6,14 @@ import { useAddNewPostMutation } from '@/api/apiSlice'
 import { Button, TextField, Input } from '@mui/material'
 
 import { useGetCurrentUserQuery } from '../auth/authSlice'
+import { CategoriesList } from '../category/CategoryList'
 
 // TS types for the input fields
 // See: https://epicreact.dev/how-to-type-a-react-form-on-submit-handler/
 interface AddPostFormFields extends HTMLFormControlsCollection {
   postTitle: HTMLInputElement
   postContent: HTMLTextAreaElement
+  category: HTMLSelectElement
 }
 interface AddPostFormElements extends HTMLFormElement {
   readonly elements: AddPostFormFields
@@ -23,7 +25,7 @@ export const AddPostForm = () => {
     const [addNewPost, {isLoading}] = useAddNewPostMutation()
     // to be replaced with the current user ID
     const {data : currentUser} = useGetCurrentUserQuery()
-    console.log(currentUser?.id)
+    // console.log(currentUser?.id)
     const handleSubmit = async (e: React.FormEvent<AddPostFormElements>) => {
         // Prevent server submission
         e.preventDefault()
@@ -31,12 +33,13 @@ export const AddPostForm = () => {
         const { elements } = e.currentTarget
         const Title = elements.postTitle.value
         const Content = elements.postContent.value
+        const CategoryID = elements.category.value
 
         const form = e.currentTarget 
 
         try { 
             // await return result/error of the promise returned by addNewPost
-            await addNewPost({Title, Content, UserID: currentUser?.id!}).unwrap()
+            await addNewPost({Title, Content, UserID: currentUser?.id!, CategoryID }).unwrap()
             form.reset()
         } catch (err) {
             console.error('Failed to save the post: ', err)
@@ -51,7 +54,8 @@ export const AddPostForm = () => {
       <form onSubmit={handleSubmit}>
         <label htmlFor="postTitle">Post Title:</label>
         <Input type="text" id="postTitle" defaultValue="" required />
-
+        <label htmlFor="category">Category:</label>
+        <CategoriesList />
         <label htmlFor="postContent">Content:</label>
         <TextField
         sx={{marginBottom: 2}}

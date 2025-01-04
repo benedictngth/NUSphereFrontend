@@ -17,16 +17,12 @@ export const SinglePostPage = () => {
     const navigate = useNavigate();
     let content :React.ReactNode;
 
-    console.log("is delete success ", isDeleteSuccess)
+    // console.log("is delete success ", isDeleteSuccess)
     const canEdit = currentUser?.id  ===post?.UserID;
     if (isFetchingPost || isLoading) {
         content = <Spinner text="Loading..." />;
     }
-    else if (isDeleteSuccess) {
-        navigate('/posts');
-    }
-    else if (isFetchPostSuccess){
-   
+    else if (isFetchPostSuccess && post) {
     content = (
         <section>
             <article className="post">
@@ -40,8 +36,15 @@ export const SinglePostPage = () => {
                     </Link>
 
                     <Button onClick = {
-                        () => {
-                            deletePost(post.ID)
+                        async() => {
+                            try {
+                                await deletePost(post.ID).unwrap()
+                                navigate('/posts')
+                            }
+                            catch(err){
+                                console.error('Failed to delete the post: ', err)
+                            }
+
                         }
                         } disabled={isLoading} variant="contained" color="error">
                         Delete Post
