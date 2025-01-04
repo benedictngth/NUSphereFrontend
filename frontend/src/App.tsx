@@ -9,7 +9,7 @@ import { useAppSelector } from './app/hooks'
 
 import {ProtectedRoute} from '@/components/ProtectedRoute'
 
-import { Navbar } from './components/Navbar'
+import { Navbar } from './components/NavBar/Navbar'
 import {LoginPage} from './features/auth/LoginPage'
 import {RegisterPage} from './features/auth/RegisterPage'
 import {PostsMainPage} from './features/posts/PostsMainPage'
@@ -21,8 +21,9 @@ import { EditPostForm } from './features/posts/EditPostForm'
 function App() {
   return (
     <Router>
-      <Navbar />
+
       <div className="App">
+      <Navbar />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element = {<RegisterPage />} />

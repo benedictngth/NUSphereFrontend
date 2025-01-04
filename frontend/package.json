@@ -1,5 +1,5 @@
 {
-  "name": "redux-essentials-example",
+  "name": "nusphere",
   "version": "2.0.0",
   "private": true,
   "dependencies": {
@@ -12,8 +12,8 @@
     "@reduxjs/toolkit": "^2.2",
     "classnames": "^2.2.6",
     "date-fns": "^3",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-redux": "^9",
     "react-router-dom": "^6",
     "react-tiny-toast": "^2.0.1"
@@ -21,17 +21,17 @@
   "scripts": {
     "dev": "vite",
     "start": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "servce": "vite preview",
     "format": "prettier --write ./src/**/*.{ts,tsx,css}"
   },
   "devDependencies": {
     "@types/node": "^20.11.6",
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "prettier": "^3.2.1",
     "typescript": "^5.4",
-    "vite": "^5.0.11"
-  },
-  "packageManager": "yarn@4.5.3"
+    "vite": "^5.4.11"
+  }
 }

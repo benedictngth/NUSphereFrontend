@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch,useAppSelector } from '@/app/hooks'
 // import { selectAllUsers} from '@/features/users/usersSlice'
 import { useLoginMutation, useCheckAuthQuery } from './authSlice'
-
+import {Box, Container, Typography} from '@mui/material'
+import Grid from '@mui/material/Grid2'
 
 
 import { TextField, Button } from '@mui/material'
@@ -44,27 +45,65 @@ export const LoginPage = () => {
     
 
     return (
-        <section>
-            <h2>Login</h2>
-            <form onSubmit = {handleSubmit}>
-                    <TextField
-                    required
-                    variant="outlined"
-                    id="username"
-                    label="Username"
-                    defaultValue=""
-                    />
+        <Container maxWidth="sm">
+            <Grid 
+                container 
+                spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}
+                direction="column" 
+                sx={{textAlign: 'center', marginTop : 10}}
+            >
+                <form onSubmit = {handleSubmit}>
+                    <Grid 
+                        container
+                        spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}
+                        direction="column" 
+                        sx={{textAlign: 'center'}}
+                            justifyContent="center"
+                    >   
 
-                    <TextField
-                    required
-                    id="password"
-                    variant="outlined"
-                    label="Password"
-                    defaultValue=""
-                    />
-                <Button variant="contained" type="submit">Login</Button>
-            </form>
-            <p>Don't have an account? <Button onClick = {() => navigate('/register')}>Register</Button></p>
-        </section>
+                        <Grid>
+                            <TextField
+                            required
+                            variant="outlined"
+                            id="username"
+                            label="Username"
+                            defaultValue=""
+                            />
+                        </Grid>
+
+                        <Grid>
+                            <TextField
+                            required
+                            id="password"
+                            variant="outlined"
+                            label="Password"
+                            defaultValue=""
+                            />
+                        </Grid>
+
+                        <Grid>
+                            <Button variant="contained" type="submit">Login</Button>
+                        </Grid>
+
+                    </Grid>
+                </form>
+                </Grid>
+            {/* grid for registration */}
+                <Grid 
+                container 
+                direction="column" 
+                sx={{
+                    textAlign: 'center', 
+                    marginTop: 2,
+                    alignItems: 'center'
+                    }}
+                >
+                <Typography variant='body2' component="p"> Don't have an account? </Typography> 
+                    <Grid size={4}>
+                        <Button variant="contained" onClick = {() => navigate('/register')}>Register</Button>
+                    </Grid>
+            </Grid>
+
+        </Container>
     )
 }
