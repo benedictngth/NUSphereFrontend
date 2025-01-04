@@ -11,8 +11,7 @@ import {ProtectedRoute} from '@/components/ProtectedRoute'
 
 import { Navbar } from './components/Navbar'
 import {LoginPage} from './features/auth/LoginPage'
-import {PostsList} from './features/posts/PostsList'
-import {AddPostForm} from './features/posts/AddPostForm'
+import {RegisterPage} from './features/auth/RegisterPage'
 import {PostsMainPage} from './features/posts/PostsMainPage'
 import {SinglePostPage} from './features/posts/SinglePostPage'
 import { EditPostForm } from './features/posts/EditPostForm'
@@ -26,7 +25,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          
+          <Route path="/register" element = {<RegisterPage />} />
           <Route 
             path="/*"
             element={

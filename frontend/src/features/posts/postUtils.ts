@@ -26,6 +26,7 @@ export interface Post {
 //create type alias based on Post interface
 export type PostUpdate = Pick<Post, 'ID' | 'Title' | 'Content'>
 export type NewPost = Pick<Post, 'Title' | 'Content' | 'UserID'>
+export type DeletePost = Pick<Post, 'ID'>
 
 
 //side effect listener (react toast)for adding new post

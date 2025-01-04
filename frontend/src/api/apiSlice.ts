@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
-import type { Post, NewPost, PostUpdate} from '@/features/posts/postUtils';
+import type { Post, NewPost, PostUpdate, DeletePost} from '@/features/posts/postUtils';
 export type {Post};
 
 //define single API slice object
@@ -44,6 +44,13 @@ export const apiSlice = createApi({
             //invalidates cache (ID) for the single post that was edited
             invalidatesTags : (result, error, arg) => [{type:'Post', ID: arg.ID}]
         }),
+        deletePost : builder.mutation<DeletePost, string>({
+            query : postId => ({
+                url : `/posts/delete/${postId}`,
+                method : 'DELETE'
+            }),
+            invalidatesTags : ['Post']
+        }),
 
 
 })
@@ -54,6 +61,7 @@ export const {
     useGetPostQuery,
     useAddNewPostMutation, 
     useEditPostMutation,
+    useDeletePostMutation
 } = apiSlice;
 
 

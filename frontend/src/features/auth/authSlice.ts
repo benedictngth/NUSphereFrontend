@@ -1,4 +1,6 @@
 import { apiSlice } from '@/api/apiSlice'
+import  type { AppStartListening, startAppListening } from '@/app/listernerMiddleware'
+import { Login } from '@mui/icons-material'
 
 // interface AuthState {
 //     username :string | null
@@ -13,6 +15,10 @@ interface LoginRequest {
     username :string
     password :string
 
+}
+
+interface RegisterResponse {
+    error : string
 }
 
 export interface TokenRequest {
@@ -45,6 +51,18 @@ const apiSliceWithAuth = apiSlice.injectEndpoints({
             }),
             invalidatesTags : ['Auth', 'User'],
         }),
+        register : builder.mutation<RegisterResponse,LoginRequest>({
+            query : loginRequest => ({
+                url : '/users/register',
+                method : 'POST',
+                body : loginRequest
+            }),
+            // invalidatesTags : ['Auth','User'],
+            transformResponse : (response :RegisterResponse) => {
+                console.log(response.error)
+                return response
+            }
+        }),
         //check whether they are auth cookies in browser
         checkAuth: builder.query<string, void>({
             query : () => ({
@@ -75,5 +93,22 @@ export const {
     useLoginMutation, 
     useLogoutMutation, 
     useCheckAuthQuery,
-    useGetCurrentUserQuery
+    useGetCurrentUserQuery,
+    useRegisterMutation
 } = apiSliceWithAuth
+
+export const addLoginListerner = (startAppListening : AppStartListening) => {
+    startAppListening({
+        matcher: apiSliceWithAuth.endpoints.login.matchRejected,
+        effect : async (action, listenerApi) => {
+            const { toast } = await import('react-tiny-toast')
+            const toastId = toast.show('Login failed', {
+                variant : 'danger',
+                position : 'top-right',
+                pause : true
+            })
+            await listenerApi.delay(5000)
+            toast.remove(toastId)
+        }
+    })
+}

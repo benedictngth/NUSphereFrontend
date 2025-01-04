@@ -3,8 +3,8 @@ package posts
 import (
 	"context"
 	"fmt"
-
 	"log"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 
@@ -67,11 +67,12 @@ func GetPostByPublicID(pg *common.Postgres, ctx context.Context, publicID string
 }
 
 func EditPostByPublicID(pg *common.Postgres, ctx context.Context, publicID string, post Post) error {
-	query := `UPDATE posts SET title = @title, content = @content WHERE public_id = @postPublicID`
+	query := `UPDATE posts SET title = @title, content = @content, updated_at = @updatedAt WHERE public_id = @postPublicID`
 	args := pgx.NamedArgs{
 		"title":        post.Title,
 		"content":      post.Content,
 		"postPublicID": publicID,
+		"updatedAt":    time.Now().Format(time.RFC3339),
 	}
 	_, err := pg.DB.Exec(ctx, query, args)
 	if err != nil {

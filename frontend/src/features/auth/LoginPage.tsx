@@ -64,6 +64,7 @@ export const LoginPage = () => {
                     />
                 <Button variant="contained" type="submit">Login</Button>
             </form>
+            <p>Don't have an account? <Button onClick = {() => navigate('/register')}>Register</Button></p>
         </section>
     )
 }

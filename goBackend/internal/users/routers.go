@@ -79,13 +79,13 @@ func RegisterHandler(authService AuthService) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
 			return
 		}
-		user, err := authService.Register(context.Background(), req.Username, req.Password)
+		_, err := authService.Register(context.Background(), req.Username, req.Password)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "registration failed"})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"user_id": user.PublicID, "username": user.Username})
+		c.JSON(http.StatusOK, gin.H{"error": "nil"})
 
 	}
 }
