@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { useCheckAuthQuery, useLogoutMutation } from "@/features/auth/authSlice"
+import {useLogoutMutation } from "@/features/auth/authSlice"
 import { Link } from "react-router-dom"
 import { UserIcon } from "../UserIcon"
 import { Typography } from "@mui/material"

@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import NUSphereIconComponent from '../NUSphereIcon';
 
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -40,12 +41,18 @@ function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* md display */}
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 0.8 }} />
+          <NUSphereIconComponent
+          sx={{
+            display: { xs: 'none', md: 'flex' }
+          }}/>
+          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 0.8 }} /> */}
           <Typography
+
             variant="h6"
             noWrap
             component="p"
             sx={{
+              ml: 1.5,
               mr: 2,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'Poppins',
@@ -59,13 +66,19 @@ function ResponsiveAppBar() {
             NUSphere
           </Typography>
           {/* xs display */}
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 0.8 }} />
+          {/* not working */}
+          <NUSphereIconComponent
+          sx={{
+            display: { xs: 'flex', md: 'none' }
+          }}/>
+          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 0.8 }} /> */}
           <Typography
             variant="h5"
             noWrap
             component="a"
             href="#app-bar-with-responsive-menu"
             sx={{
+              ml: 1,
               mr: 1.5,
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
