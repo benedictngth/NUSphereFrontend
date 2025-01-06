@@ -15,7 +15,7 @@ import (
 func Users(router *gin.RouterGroup, authService AuthService) {
 	router.POST("/register", RegisterHandler(authService))
 	router.POST("/login", LoginHandler(authService))
-	router.GET("/cookie", GetCookieHandler(authService))
+	router.GET("/auth", GetAuthHandler(authService))
 	router.GET("", GetUsersHandler(authService))
 }
 
@@ -36,7 +36,7 @@ func GetAuthUserHandler(authService AuthService) gin.HandlerFunc {
 	}
 }
 
-func GetCookieHandler(authService AuthService) gin.HandlerFunc {
+func GetAuthHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, err := c.Cookie("Authorisation")
 		log.Print(err)

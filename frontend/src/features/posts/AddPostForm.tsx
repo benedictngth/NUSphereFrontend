@@ -1,9 +1,8 @@
 import React , {useState} from 'react'
-import {nanoid} from '@reduxjs/toolkit'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useNavigate } from 'react-router-dom'
 // import {addNewPost} from '@/features/posts/postSlice'
 import { useAddNewPostMutation } from '@/api/apiSlice'
-import { Button, TextField, Input } from '@mui/material'
+import { Button, TextField, Input, Typography, Box, FormControl, InputLabel, FormHelperText } from '@mui/material'
 
 import { useGetCurrentUserQuery } from '../auth/authSlice'
 import { CategoriesList } from '../category/CategoryList'
@@ -21,6 +20,7 @@ interface AddPostFormElements extends HTMLFormElement {
 
     
 export const AddPostForm = () => {
+    const navigate = useNavigate()
     //trigger function, object with metadata about the request
     const [addNewPost, {isLoading}] = useAddNewPostMutation()
     // to be replaced with the current user ID
@@ -30,10 +30,13 @@ export const AddPostForm = () => {
         // Prevent server submission
         e.preventDefault()
 
-        const { elements } = e.currentTarget
-        const Title = elements.postTitle.value
-        const Content = elements.postContent.value
-        const CategoryID = elements.category.value
+      const formData = new FormData(e.currentTarget)
+
+      console.log('Form data:', formData)
+
+        const Title = formData.get('postTitle') as string
+        const Content = formData.get('postContent') as string
+        const CategoryID = formData.get('category') as string
 
         const form = e.currentTarget 
 
@@ -41,6 +44,8 @@ export const AddPostForm = () => {
             // await return result/error of the promise returned by addNewPost
             await addNewPost({Title, Content, UserID: currentUser?.id!, CategoryID }).unwrap()
             form.reset()
+            navigate('/posts')
+
         } catch (err) {
             console.error('Failed to save the post: ', err)
             form.reset()
@@ -49,25 +54,46 @@ export const AddPostForm = () => {
   
 
   return (
-    <section>
-      <h2>Add a New Post</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="postTitle">Post Title:</label>
-        <Input type="text" id="postTitle" defaultValue="" required />
-        <label htmlFor="category">Category:</label>
-        <CategoriesList />
-        <label htmlFor="postContent">Content:</label>
+    <Box sx={{mx: 3, mt: 2}}>
+      <Typography variant='h4' component='h2' sx={{fontWeight:600}}>Add New Post</Typography>
+
+      <Box 
+      component="form" 
+      onSubmit={handleSubmit}
+      sx={{display: 'flex', flexDirection: 'column', gap: 2, mr: 2, ml: 2}}>
+
+        <FormControl variant='standard'>
+          <InputLabel sx={{ml:1}}htmlFor="postTitle">Post Title</InputLabel>
+          <Input 
+          id="postTitle" 
+          name = "postTitle"
+          required />
+          <FormHelperText>Enter the title of your post</FormHelperText>
+        </FormControl>
+
+        <FormControl variant='standard'>
+          <CategoriesList />
+        </FormControl>
+
         <TextField
-        sx={{marginBottom: 2}}
           fullWidth
           id="postContent"
           name="postContent"
+          label="Post Content"
+          sx={{marginBottom: 2}}
+          multiline
+          maxRows={4}
           defaultValue="Content Here!"
           required
         />
 
-        <Button type = "submit" variant = "contained" disabled={isLoading}>Save Post</Button>
-      </form>
-    </section>
+        <Button 
+        type = "submit" 
+        variant = "contained" 
+        disabled={isLoading}>
+          Save Post
+        </Button>
+      </Box>
+    </Box>
   )
 }

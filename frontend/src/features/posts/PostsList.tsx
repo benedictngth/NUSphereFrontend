@@ -8,7 +8,7 @@ import { useGetPostsQuery,Post } from "@/api/apiSlice";
 
 import { Spinner } from "@/components/Spinner";
 import { PostExcerpt } from "./PostListExcerpt";
-import { Grid2 as Grid } from "@mui/material";
+import { Box, Grid2 as Grid, Typography } from "@mui/material";
 
 
 
@@ -33,24 +33,35 @@ export const PostsList = () => {
     let content: React.ReactNode
 
     if (isLoading) {
-      content = <Spinner text="Loading..." />
+      content = <Spinner text="Loading Posts..." />
     } else if (isSuccess) {
         const renderedPosts = sortedPosts.map((post) => (
             <PostExcerpt key={post.ID} post={post} />
         ))
+    
     const containerClassname = classnames('posts-container', {
         disabled:isFetching})
-    content = <Grid container spacing = {2} className={containerClassname}>{renderedPosts}</Grid>
+    content = 
+            <Grid container spacing = {2} className={containerClassname}
+            >
+            <Typography 
+            variant="h3" 
+            sx={{
+                fontWeight: 600,
+                marginTop: 2
+            }}>
+                Posts
+            </Typography>
+            {renderedPosts}
+        </Grid>
+
     } else if (isError) {
       content = <div>{error.toString()}</div>
     }
     
-    console.log(posts);
     return (
-        <section className="post-list">
-            <h2>Posts</h2>
-            {/* <button onClick = {refetch}>Refresh</button>S */}
+        <Box sx={{mx: 3}}>
             {content}
-        </section>
+        </Box>
     );
 }

@@ -1,12 +1,14 @@
 import React from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Form, useNavigate, useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 // import {postUpdated, selectPostById} from './postSlice'
 import { useGetPostQuery,useEditPostMutation } from '@/api/apiSlice'
-import { useGetCategoriesQuery } from '@/api/apiSlice'
 
-import { CategoriesEdit } from '../category/CategoryEdit'
+import { CategoryEdit } from '../category/CategoryEdit'
+import Box from '@mui/material/Box'
+import { Button, FormControl, InputLabel, TextField } from '@mui/material'
+import { Input } from '@mui/material'
 interface EditPostFormFields extends HTMLFormControlsCollection{
     postTitle: HTMLInputElement
     postContent: HTMLTextAreaElement
@@ -28,18 +30,18 @@ export const EditPostForm = () => {
 
     if (!post) {
         return (
-            <section>
+            <Box sx={{mt: 2, mx: 3}}>
                 <h2>Post not found!</h2>
-            </section>
+            </Box>
         )
     }
     //event handler upon submitting the form
     const onSavePostClicked = async(e: React.FormEvent<AddPostFormElements>) => {
         e.preventDefault()
-        const {elements} = e.currentTarget
-        const Title = elements.postTitle.value
-        const Content = elements.postContent.value
-        const CategoryID = elements.category.value
+        const formData = new FormData(e.currentTarget)
+        const Title = formData.get('postTitle') as string
+        const Content = formData.get('postContent') as string
+        const CategoryID = formData.get('category') as string
 
 
         if (Title && Content && postId) {
@@ -57,29 +59,48 @@ export const EditPostForm = () => {
         }
     }
         return (
-            <section>
+            <Box sx={{mt: 2, mx: 3}}>
             <h2>Edit Post</h2>
-            <form onSubmit={onSavePostClicked}>
-                <label htmlFor="postTitle">Post Title:</label>
-                <input
+            <Box 
+            component="form" 
+            onSubmit={onSavePostClicked} 
+            display={'flex'} 
+            flexDirection={'column'} 
+            sx={{ '& > *': { mb: 3 } }}>
+                <FormControl>
+                <InputLabel htmlFor="postTitle">Post Title:</InputLabel>
+                <Input
                 type="text"
                 id="postTitle"
                 name="postTitle"
                 defaultValue={post.Title}
                 required
                 />
-                <CategoriesEdit defaultValue={post.CategoryID} />
-                <label htmlFor="postContent">Content:</label>
-                <textarea
+                </FormControl>
+                <CategoryEdit defaultValue={post.CategoryID} />
+
+                <FormControl>
+                <TextField
+                fullWidth
                 id="postContent"
                 name="postContent"
+                label="Post Content"
+                sx={{marginBottom: 2}}
+                multiline
+                maxRows={4}
                 defaultValue={post.Content}
                 required
                 />
-        
-                <button>Save Post</button>
-            </form>
-            </section>
+                </FormControl>
+                <Button 
+                type="submit"
+                variant="contained"
+                disabled={isLoading}
+                >
+                    Save Post
+                </Button>
+            </Box>
+            </Box>
         )
 
 }

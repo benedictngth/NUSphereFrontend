@@ -14,9 +14,7 @@ interface PostExcerptProps {
 //custom MUI Paper component
 const PostItem = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
-    // textAlign: 'center',
     color: theme.palette.text.secondary,
-    // height:60,
   }));
 
 
@@ -32,7 +30,9 @@ export function PostExcerpt({ post } :PostExcerptProps) {
     </Typography>
     <PostAuthor userId={post.UserID} />
 
-    <Typography sx = {{marginTop : 2, marginBottom:5}} variant="body1" component="p">{post.Content.substring(0, 100)}</Typography>
+    <Typography sx = {{marginTop : 2, marginBottom:5}} variant="body1" component="p">
+        {post.Content.length >100 ?  `${post.Content.substring(0, 100)}...` : post.Content}
+    </Typography>
     <TimeAgo timestamp={post.CreatedAt} />
     {/* <ReactionButtons post={post} /> */}
     </Box>

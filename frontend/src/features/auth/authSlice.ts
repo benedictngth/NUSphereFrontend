@@ -22,7 +22,7 @@ interface RegisterResponse {
 }
 
 export interface TokenRequest {
-    token :string
+    user :string
 }
 
 export interface AuthUser  {
@@ -66,7 +66,7 @@ const apiSliceWithAuth = apiSlice.injectEndpoints({
         //check whether they are auth cookies in browser
         checkAuth: builder.query<string, void>({
             query : () => ({
-                url: '/users/cookie',
+                url: '/users/auth',
                 method : 'GET'
             }),
             providesTags : ['Auth'],
@@ -92,7 +92,9 @@ const apiSliceWithAuth = apiSlice.injectEndpoints({
 export const {
     useLoginMutation, 
     useLogoutMutation, 
+    //used to check if user is authenticated
     useCheckAuthQuery,
+    //get user details
     useGetCurrentUserQuery,
     useRegisterMutation
 } = apiSliceWithAuth

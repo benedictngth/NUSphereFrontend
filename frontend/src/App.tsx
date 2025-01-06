@@ -5,16 +5,16 @@ import { BrowserRouter as Router,
 } from 'react-router-dom'
 import {ToastContainer} from 'react-tiny-toast'
 
-import { useAppSelector } from './app/hooks'
-
 import {ProtectedRoute} from '@/components/ProtectedRoute'
 
-import { Navbar } from './components/NavBar/Navbar'
+import { Navbar } from './components/navBar/Navbar'
 import {LoginPage} from './features/auth/LoginPage'
 import {RegisterPage} from './features/auth/RegisterPage'
 import {PostsMainPage} from './features/posts/PostsMainPage'
 import {SinglePostPage} from './features/posts/SinglePostPage'
 import { EditPostForm } from './features/posts/EditPostForm'
+import { AddPostForm } from './features/posts/AddPostForm'
+
 
 
 
@@ -36,6 +36,7 @@ function App() {
                     <Route path="/posts" element={<PostsMainPage />} />
                     {/* params of :postId */}
                     <Route path="/posts/:postId" element={<SinglePostPage />} />
+                    <Route path="/newPost" element={<AddPostForm />} />
                     <Route path="/editPost/:postId" element={<EditPostForm />} />
                   </Routes>
               </ProtectedRoute>

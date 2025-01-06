@@ -1,12 +1,12 @@
 import {Link, useParams} from 'react-router-dom';
-import { useAppSelector } from '@/app/hooks';
 import { useGetPostQuery } from '@/api/apiSlice';
 import { Spinner } from '@/components/Spinner';
 import { useGetCurrentUserQuery } from '../auth/authSlice';
-import { useDeletePostMutation } from '@/api/apiSlice';
-import { Button } from '@mui/material';
+import { useDeletePostMutation, useGetCategoriesQuery } from '@/api/apiSlice';
+import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { is } from 'date-fns/locale';
+import Grid from '@mui/material/Grid2';
+import { PostCategory } from '../category/PostCategory';
 
 export const SinglePostPage = () => {
     const { postId } = useParams<{ postId: string }>();
@@ -14,6 +14,7 @@ export const SinglePostPage = () => {
 
     const {data : post, isFetching: isFetchingPost, isSuccess:isFetchPostSuccess} = useGetPostQuery(postId!);
     const [deletePost, {isLoading, isSuccess: isDeleteSuccess}] = useDeletePostMutation();
+    const {data:categories} = useGetCategoriesQuery();
     const navigate = useNavigate();
     let content :React.ReactNode;
 
@@ -24,35 +25,76 @@ export const SinglePostPage = () => {
     }
     else if (isFetchPostSuccess && post) {
     content = (
-        <section>
-            <article className="post">
-                <h2>{post.Title}</h2>
-                <p className="post-content">{post.Content}</p>
+        <Box sx= {{mx: 3, mt: 2}}>
+            <Grid 
+            sx = {{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+            container spacing={2}>
+                <Grid size={12}>
+                    <Typography 
+                    variant='h5' 
+                    sx={{
+                        color: '#6d6d6d',
+                        fontWeight: 500,
+                        textAlign: 'center',
+                        justifyContent: 'center'}}
+                    component='p'>
+                        <PostCategory postId={post.CategoryID}/>
+                    </Typography>
+                    <Typography 
+                    variant='h3'
+                    sx={{fontWeight: 600, 
+                        textAlign: 'center', 
+                        justifyContent: 'center'}}
+                    >{post.Title}
+                    </Typography>
+                </Grid>
+
+                <Grid size={12}>
+                    <Typography 
+                    variant='body1'
+                    component='p'
+                    sx={{
+                        textAlign: 'center', 
+                        justifyContent: 'center'}}
+                    >{post.Content}
+                    </Typography>
+                </Grid>
+
                 {/* conditional rendering of edit button */}
-                {canEdit && (
-                <>
-                    <Link to={`/editPost/${post.ID}`} className="button">
+                {canEdit ? (
+                <Grid container size={12}>
+                    <Button
+                    variant='contained'
+                    onClick={() => navigate(`/editPost/${post.ID}`)}
+                    >
                         Edit Post
-                    </Link>
+                    </Button>
 
-                    <Button onClick = {
-                        async() => {
-                            try {
-                                await deletePost(post.ID).unwrap()
-                                navigate('/posts')
-                            }
-                            catch(err){
-                                console.error('Failed to delete the post: ', err)
-                            }
+                    <Button 
+                        onClick = {
+                            async() => {
+                                try {
+                                    await deletePost(post.ID).unwrap()
+                                    navigate('/posts')
+                                }
+                                catch(err){
+                                    console.error('Failed to delete the post: ', err)
+                                }
 
-                        }
-                        } disabled={isLoading} variant="contained" color="error">
+                            }
+                        } 
+                        disabled={isLoading} variant="contained" color="error">
                         Delete Post
                     </Button>
-                </>
+
+                </Grid>
+                ) : (
+                    <Button variant='contained' onClick={() => navigate('/posts')}>
+                        Back to Posts
+                    </Button>
                 )}
-            </article>
-        </section>
+            </Grid>
+        </Box>
     )
     }
     return <section>{content}</section>

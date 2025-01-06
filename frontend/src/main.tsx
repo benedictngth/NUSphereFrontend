@@ -9,13 +9,10 @@ import {store} from '@/app/store'
 // import { fetchUsers } from './features/users/usersSlice'
 // import { apiSliceWithUsers } from './features/users/usersSlice'
 
-import './primitiveui.css'
-import './index.css'
 import { apiSlice } from './api/apiSlice'
 
-import { createTheme, ThemeProvider } from '@mui/material';
+import { CssBaseline, createTheme, ThemeProvider } from '@mui/material';
 import { lightTheme } from '@/app/muiTheme';
-
 
 
 declare global {
@@ -41,6 +38,7 @@ function app() {
       {/* redux store context provider */}
       <Provider store={store}>
         <ThemeProvider theme={theme}>
+          <CssBaseline />
           <App />
         </ThemeProvider>
       </Provider>

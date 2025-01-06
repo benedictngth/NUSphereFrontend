@@ -1,10 +1,10 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Form, useNavigate } from 'react-router-dom'
 
 import { useAppDispatch,useAppSelector } from '@/app/hooks'
 // import { selectAllUsers} from '@/features/users/usersSlice'
 import { useLoginMutation, useCheckAuthQuery } from './authSlice'
-import {Box, Container, Typography} from '@mui/material'
+import {Box, Container, FormControl, Typography} from '@mui/material'
 import Grid from '@mui/material/Grid2'
 
 
@@ -52,7 +52,10 @@ export const LoginPage = () => {
                 direction="column" 
                 sx={{textAlign: 'center', marginTop : 10}}
             >
-                <form onSubmit = {handleSubmit}>
+                <Box 
+                component="form"  
+                onSubmit = {handleSubmit}
+                >
                     <Grid 
                         container
                         spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}
@@ -60,7 +63,6 @@ export const LoginPage = () => {
                         sx={{textAlign: 'center'}}
                             justifyContent="center"
                     >   
-
                         <Grid>
                             <TextField
                             required
@@ -86,7 +88,7 @@ export const LoginPage = () => {
                         </Grid>
 
                     </Grid>
-                </form>
+                </Box>
                 </Grid>
             {/* grid for registration */}
                 <Grid 
