@@ -55,28 +55,47 @@ export const Navbar = () => {
             <Toolbar>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <NUSphereIconComponent/>
-              <Typography
-                variant="h6"
-                noWrap
-                component="p"
-                
-                onClick={() => navigate('/posts')}
-                sx={{
-                  fontFamily: 'Poppins',
-                  fontWeight: 700,
-                  letterSpacing: '.1rem',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s ease',
-                  '&:hover': {
-                    cursor: 'pointer',
-                    transform: 'scale(1.05)',
-                    filter: 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3))',
-                  },
-                }}
-              >
-                NUSphere
-              </Typography>
+              {isSuccess ? 
+              // if user is authenticated, make the NUSphere text clickable
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="p"
+                  
+                  onClick={() => navigate('/posts')}
+                  sx={{
+                    fontFamily: 'Poppins',
+                    fontWeight: 700,
+                    letterSpacing: '.1rem',
+                    color: 'inherit',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      cursor: 'pointer',
+                      transform: 'scale(1.05)',
+                      filter: 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3))',
+                    },
+                  }}
+                >
+                  NUSphere
+                </Typography>  : 
+                // if user is not authenticated, make the NUSphere text not clickable
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="p"
+                  
+                  sx={{
+                    fontFamily: 'Poppins',
+                    fontWeight: 700,
+                    letterSpacing: '.1rem',
+                    color: 'inherit',
+                    textDecoration: 'none',
+                  }}
+                >
+                  NUSphere
+                </Typography>
+                }
             </Box>
 
             {/* space to push logout button to the right */}

@@ -49,7 +49,7 @@ const apiSliceWithAuth = apiSlice.injectEndpoints({
                 url: '/users/logout',
                 method : 'POST'
             }),
-            invalidatesTags : ['Auth', 'User'],
+            invalidatesTags : ['Auth', 'User', 'Post'],
         }),
         register : builder.mutation<RegisterResponse,LoginRequest>({
             query : loginRequest => ({
