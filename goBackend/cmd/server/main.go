@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"goBackend/internal/categories"
+	"goBackend/internal/comments"
 	"goBackend/internal/common"
 	"goBackend/internal/config"
 	"goBackend/internal/posts"
@@ -29,6 +30,7 @@ func main() {
 	authService := users.NewAuthService(cfg.JWTSecret)
 	postService := posts.NewPostsService()
 	categoriesService := categories.NewCategoriesService()
+	commentsService := comments.NewCommentsService()
 	r := gin.Default()
 	// Attach log request body and recovery middleware
 	r.Use(common.LogRequestBodyMiddleware())
@@ -36,6 +38,8 @@ func main() {
 
 	v1 := r.Group("/api")
 	users.Users(v1.Group("/users"), authService)
+
+	comments.Comments(v1.Group("/comments"), commentsService)
 	categories.Categories(v1.Group("/categories"), categoriesService)
 
 	//protected routes with JWT cookie middleware

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS USERS (
     id SERIAL PRIMARY KEY,
     public_id char(21) UNIQUE DEFAULT nanoid(21),
     username TEXT UNIQUE NOT NULL,
@@ -35,8 +35,24 @@ CREATE TABLE IF NOT EXISTS POSTS (
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     user_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
-  --requires user_public_id to be unique for foreign key constraint
+
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (category_id) REFERENCES categories(id)
+  );
+
+
+CREATE TABLE IF NOT EXISTS COMMENTS (
+  -- usage purely internal for database management
+    id SERIAL PRIMARY KEY, 
+  -- usage for public facing API
+    public_id char(21) UNIQUE DEFAULT nanoid(21),
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (post_id) REFERENCES posts(id)
   );
 

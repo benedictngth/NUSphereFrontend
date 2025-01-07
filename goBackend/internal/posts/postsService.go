@@ -11,7 +11,9 @@ import (
 
 type PostsService interface {
 	CreatePost(ctx context.Context, Title, Content, UserID, CategoryID string) error
-	GetPosts(ctx context.Context) ([]Post, error)
+	GetPosts(ctx context.Context) ([]PostPublic, error)
+	//used by api endpoint to get post by public id without database id
+	GetPostPublicByPublicID(ctx context.Context, publicID string) (PostPublic, error)
 	GetPostByPublicID(ctx context.Context, publicID string) (Post, error)
 	EditPostByPublicID(ctx context.Context, publicID, title, content, categoryID string) error
 	DeletePostByPublicID(ctx context.Context, publicID string) error
@@ -31,7 +33,7 @@ func (s *postsService) CreatePost(c context.Context, Title, Content, UserID, Cat
 		log.Print(err)
 		return err
 	}
-	post := Post{
+	post := PostPublic{
 		ID:         nanoid,
 		Title:      Title,
 		Content:    Content,
@@ -42,8 +44,12 @@ func (s *postsService) CreatePost(c context.Context, Title, Content, UserID, Cat
 
 }
 
-func (s *postsService) GetPosts(c context.Context) ([]Post, error) {
+func (s *postsService) GetPosts(c context.Context) ([]PostPublic, error) {
 	return GetPosts(common.GetDB(), c)
+}
+
+func (s *postsService) GetPostPublicByPublicID(c context.Context, publicID string) (PostPublic, error) {
+	return GetPostPublicByPublicID(common.GetDB(), c, publicID)
 }
 
 func (s *postsService) GetPostByPublicID(c context.Context, publicID string) (Post, error) {
@@ -52,7 +58,7 @@ func (s *postsService) GetPostByPublicID(c context.Context, publicID string) (Po
 
 func (s *postsService) EditPostByPublicID(c context.Context, publicID, title, content, categoryID string) error {
 	//get post with publicID
-	post, err := GetPostByPublicID(common.GetDB(), c, publicID)
+	post, err := GetPostPublicByPublicID(common.GetDB(), c, publicID)
 	if err != nil {
 		return err
 	}

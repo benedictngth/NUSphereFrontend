@@ -54,7 +54,7 @@ func GetPostByIDHandler(postsService PostsService) gin.HandlerFunc {
 		time.Sleep(1 * time.Second)
 		publicID := c.Param("id")
 		//get post by public id
-		post, err := postsService.GetPostByPublicID(context.Background(), publicID)
+		post, err := postsService.GetPostPublicByPublicID(context.Background(), publicID)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get post"})
