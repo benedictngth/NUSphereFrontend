@@ -24,7 +24,7 @@ export function PostExcerpt({ post } :PostExcerptProps) {
 
     <PostItem key={post.ID} elevation={3}>
     <Box p={2}>
-    <PostCategory postId={post.CategoryID} />
+    <PostCategory postId={post.CategoryID} alignCenter={false} />
     <Typography variant="h5" component="div">
         <Link to ={`/posts/${post.ID}`}>{post.Title}</Link>
     </Typography>

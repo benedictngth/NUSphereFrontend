@@ -30,16 +30,9 @@ export const SinglePostPage = () => {
             sx = {{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
             container spacing={2}>
                 <Grid size={12}>
-                    <Typography 
-                    variant='h5' 
-                    sx={{
-                        color: '#6d6d6d',
-                        fontWeight: 500,
-                        textAlign: 'center',
-                        justifyContent: 'center'}}
-                    component='p'>
-                        <PostCategory postId={post.CategoryID}/>
-                    </Typography>
+    
+                    <PostCategory postId={post.CategoryID} alignCenter={true}/>
+
                     <Typography 
                     variant='h3'
                     sx={{fontWeight: 600, 

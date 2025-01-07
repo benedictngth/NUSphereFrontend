@@ -17,7 +17,7 @@ func LoadConfig() Config {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error loading environment variables")
+		log.Fatalf("Error: %v", err)
 	}
 
 	dataBaseURL := os.Getenv("DATABASE_URL")

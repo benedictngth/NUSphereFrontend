@@ -41,7 +41,7 @@ func GetAuthHandler(authService AuthService) gin.HandlerFunc {
 		_, err := c.Cookie("Authorisation")
 		log.Print(err)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, "error")
+			c.JSON(http.StatusUnauthorized, "error")
 			return
 		}
 		c.JSON(http.StatusOK, "authSuccess")

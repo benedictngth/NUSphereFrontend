@@ -3,6 +3,8 @@ import { Navigate } from "react-router-dom"
 import { Spinner } from "./Spinner"
 
 export const ProtectedRoute = ({children} : {children : React.ReactNode}) => {
+
+  //uses public endpoint api/users/auth to check if user is authenticated
   const {
     data : token, 
     isLoading,
@@ -20,10 +22,10 @@ export const ProtectedRoute = ({children} : {children : React.ReactNode}) => {
 
   // console.log("token is: ", token)
 
-  if(token ==="error" || token === undefined) {
+  if(isError || !token) {
       return <Navigate to = "/login" />
   }
-  else {
+  else if (isSuccess){
     return <>{children}</>
   }
   
