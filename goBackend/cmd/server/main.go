@@ -36,13 +36,13 @@ func main() {
 
 	v1 := r.Group("/api")
 	users.Users(v1.Group("/users"), authService)
+	categories.Categories(v1.Group("/categories"), categoriesService)
 
 	//protected routes with JWT cookie middleware
 	v1.Use(users.AuthMiddleware(cfg.JWTSecret))
 	posts.Posts(v1.Group("/posts"), postService)
 	users.Profile(v1.Group("/users"))
 	users.AuthUsers(v1.Group("/users"), authService)
-	categories.Categories(v1.Group("/categories"), categoriesService)
 
 	port := cfg.Port
 	if port == "" {

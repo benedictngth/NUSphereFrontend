@@ -14,8 +14,10 @@ CREATE TABLE IF NOT EXISTS CATEGORIES (
     public_id char(21) UNIQUE DEFAULT nanoid(21),
     name TEXT UNIQUE NOT NULL,
     description TEXT NOT NULL,
-    parent_id INT DEFAULT NULL,
-    created_by INT DEFAULT 0,
+    -- 0 mean it is the parent category
+    parent_id INT DEFAULT 0,
+    -- TO DO with reference to which user created the category
+    created_by INT DEFAULT 1,
 
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET DEFAULT
     -- created_at TIMESTAMP  DEFAULT NOW(),
