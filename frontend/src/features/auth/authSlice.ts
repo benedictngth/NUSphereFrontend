@@ -61,7 +61,8 @@ const apiSliceWithAuth = apiSlice.injectEndpoints({
             transformResponse : (response :RegisterResponse) => {
                 console.log("Register response: ", response.error)
                 return response
-            }
+            },
+            invalidatesTags : ['Auth', 'User']
         }),
         //check whether they are auth cookies in browser
         checkAuth: builder.query<string, void>({

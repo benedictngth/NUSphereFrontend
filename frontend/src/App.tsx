@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter as Router, 
   Route, 
   Routes,
@@ -14,6 +15,8 @@ import {PostsMainPage} from './features/posts/PostsMainPage'
 import {SinglePostPage} from './features/posts/SinglePostPage'
 import { EditPostForm } from './features/posts/EditPostForm'
 import { AddPostForm } from './features/posts/AddPostForm'
+import Footer from './components/Footer'
+import Box from '@mui/material/Box'
 
 
 
@@ -21,8 +24,14 @@ import { AddPostForm } from './features/posts/AddPostForm'
 function App() {
   return (
     <Router>
-
-      <div className="App">
+      <Box 
+        className="App"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+      }}
+      >
       <Navbar />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
@@ -43,8 +52,9 @@ function App() {
             }
           />
         </Routes>
-        <ToastContainer />
-      </div>
+        <Footer />
+      </Box>
+      <ToastContainer />
     </Router>
   )
 }

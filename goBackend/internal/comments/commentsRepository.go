@@ -16,7 +16,7 @@ import (
 
 type CommentRepository interface {
 	CreateComment(ctx context.Context, comment CommentPublic) error
-	GetComments(ctx context.Context) ([]CommentPublic, error)
+	GetCommentsByPostID(ctx context.Context) ([]CommentPublic, error)
 	GetCommentByPublicID(ctx context.Context, publicID string) (CommentPublic, error)
 	EditCommentByPublicID(ctx context.Context, publicID string, comment CommentPublic) error
 	DeleteCommentByPublicID(ctx context.Context, publicID string) error
@@ -51,12 +51,13 @@ func CreateComment(pg *common.Postgres, ctx context.Context, comment CommentPubl
 	return nil
 }
 
-func GetComments(pg *common.Postgres, ctx context.Context) ([]CommentPublic, error) {
+func GetCommentsByPostID(pg *common.Postgres, ctx context.Context, postID string) ([]CommentPublic, error) {
 	query := "SELECT comments.public_id as \"comments.public_id\", comments.content, comments.created_at, comments.updated_at, users.public_id as \"users.public_id\", posts.public_id as \"posts.public_id\" " +
 		"FROM comments " +
 		"INNER JOIN users ON comments.user_id = users.id " +
-		"INNER JOIN posts ON comments.post_id = posts.id"
-	rows, err := pg.DB.Query(ctx, query)
+		"INNER JOIN posts ON comments.post_id = posts.id " +
+		"WHERE posts.public_id = $1"
+	rows, err := pg.DB.Query(ctx, query, postID)
 	if err != nil {
 		return nil, fmt.Errorf("unable to query comments: %w", err)
 	}

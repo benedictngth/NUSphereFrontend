@@ -22,6 +22,7 @@ export const apiSliceWithUsers = apiSlice.injectEndpoints({
 
 //         return usersAdapter.setAll(initialState, transformedUsers)
 //       }
+      providesTags: ['User'],
     }),
   })
 })

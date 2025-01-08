@@ -1,9 +1,9 @@
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material'
 
 interface spinnerProps {
-  text:string
+  text: string
 }
-export const Spinner = ({text} : spinnerProps ) => {
+export const Spinner = ({ text }: spinnerProps) => {
   return (
     <Box
       sx={{
@@ -14,8 +14,9 @@ export const Spinner = ({text} : spinnerProps ) => {
       }}
     >
       <CircularProgress />
-      <Typography sx={{ml:1}}variant="h6">{text}</Typography>
+      <Typography sx={{ ml: 1 }} variant="h6">
+        {text}
+      </Typography>
     </Box>
-  );
+  )
 }
-

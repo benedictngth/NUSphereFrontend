@@ -7,6 +7,9 @@ import { PostCategory } from "../category/PostCategory";
 import { TimeAgo } from "@/components/TimeAgo";
 // import { ReactionButtons } from "./ReactionButtons";
 import {Grid2 as Grid} from "@mui/material";
+
+import { useGetNumCommentsByPostIDQuery } from "@/api/apiSlice";
+
 interface PostExcerptProps {
     post : Post
 }
@@ -19,12 +22,15 @@ const PostItem = styled(Paper)(({ theme }) => ({
 
 
 export function PostExcerpt({ post } :PostExcerptProps) {
+    const {data: numComments, isLoading} = useGetNumCommentsByPostIDQuery(post.ID)
+
     return (
     <Grid size={12}>
 
     <PostItem key={post.ID} elevation={3}>
     <Box p={2}>
     <PostCategory postId={post.CategoryID} alignCenter={false} />
+
     <Typography variant="h5" component="div">
         <Link to ={`/posts/${post.ID}`}>{post.Title}</Link>
     </Typography>
@@ -33,7 +39,18 @@ export function PostExcerpt({ post } :PostExcerptProps) {
     <Typography sx = {{marginTop : 2, marginBottom:5}} variant="body1" component="p">
         {post.Content.length >100 ?  `${post.Content.substring(0, 100)}...` : post.Content}
     </Typography>
-    <TimeAgo timestamp={post.CreatedAt} />
+    <Box sx={{display: 'flex', direction:'column', justifyContent:'space-between', alignItems:'center'}}>
+       
+        <TimeAgo timestamp={post.CreatedAt} />
+        <Box flexGrow={1}></Box>
+        <Typography 
+            sx={{mr:5}}
+            variant="body1" 
+            component="span"
+        >
+            {numComments ?? 0} {(numComments ?? 0) <= 1 ? "comment" : "comments"} 
+        </Typography>
+    </Box>
     {/* <ReactionButtons post={post} /> */}
     </Box>
 </PostItem>

@@ -3,7 +3,7 @@ import React, {useEffect, useMemo} from "react";
 import classnames from 'classnames'
 
 
-import { useGetPostsQuery,Post } from "@/api/apiSlice";
+import { useGetPostsQuery, useGetNumCommentsByPostIDQuery } from "@/api/apiSlice";
 
 
 import { Spinner } from "@/components/Spinner";
@@ -24,6 +24,8 @@ export const PostsList = () => {
     } = useGetPostsQuery()
 
 
+
+
     const sortedPosts = useMemo(() => {
         const sortedPosts = posts.slice()
         sortedPosts.sort((a,b) => b.CreatedAt.localeCompare(a.CreatedAt))
@@ -35,15 +37,16 @@ export const PostsList = () => {
     if (isLoading) {
       content = <Spinner text="Loading Posts..." />
     } else if (isSuccess) {
-        const renderedPosts = sortedPosts.map((post) => (
-            <PostExcerpt key={post.ID} post={post} />
-        ))
-    
-    const containerClassname = classnames('posts-container', {
-        disabled:isFetching})
-    content = 
-            <Grid container spacing = {2} className={containerClassname}
-            >
+        if (posts.length === 0) {
+            content = <Typography variant="h3">No posts</Typography>
+        } else{
+            const renderedPosts = sortedPosts.map((post) => (
+                <PostExcerpt key={post.ID} post={post} />
+            ))
+            const containerClassname = classnames('posts-container', {
+                disabled:isFetching})
+            content = 
+            <Grid container spacing = {2} className={containerClassname}>
             <Typography 
             variant="h3" 
             sx={{
@@ -54,6 +57,8 @@ export const PostsList = () => {
             </Typography>
             {renderedPosts}
         </Grid>
+                    
+        }
 
     } else if (isError) {
       content = <div>{error.toString()}</div>

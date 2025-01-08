@@ -11,7 +11,7 @@ import (
 
 type CommentsService interface {
 	CreateComment(ctx context.Context, Content, UserID, PostID string) error
-	GetComments(ctx context.Context) ([]CommentPublic, error)
+	GetCommentsByPostID(ctx context.Context, PostID string) ([]CommentPublic, error)
 	GetCommentByPublicID(ctx context.Context, publicID string) (CommentPublic, error)
 	EditCommentByPublicID(ctx context.Context, publicID, content string) error
 	DeleteCommentByPublicID(ctx context.Context, publicID string) error
@@ -40,8 +40,8 @@ func (s *commentsService) CreateComment(c context.Context, Content, UserID, Post
 	return CreateComment(common.GetDB(), c, comment)
 }
 
-func (s *commentsService) GetComments(c context.Context) ([]CommentPublic, error) {
-	return GetComments(common.GetDB(), c)
+func (s *commentsService) GetCommentsByPostID(c context.Context, postID string) ([]CommentPublic, error) {
+	return GetCommentsByPostID(common.GetDB(), c, postID)
 }
 
 func (s *commentsService) GetCommentByPublicID(c context.Context, publicID string) (CommentPublic, error) {

@@ -1,94 +1,56 @@
-import {Link, useParams} from 'react-router-dom';
-import { useGetPostQuery } from '@/api/apiSlice';
+import React from 'react';
+import {useParams} from 'react-router-dom';
+import { useEditCommentMutation, useGetCommentsByPostIDQuery, useGetPostQuery } from '@/api/apiSlice';
 import { Spinner } from '@/components/Spinner';
 import { useGetCurrentUserQuery } from '../auth/authSlice';
-import { useDeletePostMutation, useGetCategoriesQuery } from '@/api/apiSlice';
-import { Box, Button, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import Grid from '@mui/material/Grid2';
-import { PostCategory } from '../category/PostCategory';
+import { useDeletePostMutation, useDeleteCommentMutation} from '@/api/apiSlice';
+import { Box, Typography } from '@mui/material';
+import { SinglePostComment } from '../comments/SinglePostComments';
+
+import { PostContent } from './SinglePostContent';
 
 export const SinglePostPage = () => {
     const { postId } = useParams<{ postId: string }>();
     const {data : currentUser} = useGetCurrentUserQuery();
 
-    const {data : post, isFetching: isFetchingPost, isSuccess:isFetchPostSuccess} = useGetPostQuery(postId!);
-    const [deletePost, {isLoading, isSuccess: isDeleteSuccess}] = useDeletePostMutation();
-    const {data:categories} = useGetCategoriesQuery();
-    const navigate = useNavigate();
-    let content :React.ReactNode;
+    const {data : post, isLoading: isLoadingPost, isFetching: isFetchingPost, isSuccess:isFetchPostSuccess} = useGetPostQuery(postId!)
 
-    // console.log("is delete success ", isDeleteSuccess)
+    const [deletePost, {isLoading, isSuccess: isDeleteSuccess}] = useDeletePostMutation()
+
+    const [deleteComment, {isLoading: isDeleteCommentLoading, isSuccess: isCommentDeleteSuccess}] = useDeleteCommentMutation()
+
+    const [editComment, {isLoading:isEditCommentLoading}] = useEditCommentMutation()
+
+    let postContent :React.ReactNode;
+    let commentContent : React.ReactNode;
+
+    //skip the query if post is not loaded => 'waits for the posts query to finish'
+    const {data: comments, isLoading: isLoadingComments, isFetching: isFetchingComments, isSuccess: isFetchCommentsSuccess} = useGetCommentsByPostIDQuery(post?.ID ?? '', {skip: !post?.ID});
+    console.log(comments)
+
     const canEdit = currentUser?.id  ===post?.UserID;
-    if (isFetchingPost || isLoading) {
-        content = <Spinner text="Loading..." />;
+
+    if (isLoadingPost || isLoading) {
+        postContent = <Spinner text="Loading..." />;
+
+    } 
+    else if (isFetchingPost) {
+        postContent = <Spinner text="Fetching Post..." />;
     }
     else if (isFetchPostSuccess && post) {
-    content = (
-        <Box sx= {{mx: 3, mt: 2}}>
-            <Grid 
-            sx = {{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
-            container spacing={2}>
-                <Grid size={12}>
-    
-                    <PostCategory postId={post.CategoryID} alignCenter={true}/>
-
-                    <Typography 
-                    variant='h3'
-                    sx={{fontWeight: 600, 
-                        textAlign: 'center', 
-                        justifyContent: 'center'}}
-                    >{post.Title}
-                    </Typography>
-                </Grid>
-
-                <Grid size={12}>
-                    <Typography 
-                    variant='body1'
-                    component='p'
-                    sx={{
-                        textAlign: 'center', 
-                        justifyContent: 'center'}}
-                    >{post.Content}
-                    </Typography>
-                </Grid>
-
-                {/* conditional rendering of edit button */}
-                {canEdit ? (
-                <Grid container size={12}>
-                    <Button
-                    variant='contained'
-                    onClick={() => navigate(`/editPost/${post.ID}`)}
-                    >
-                        Edit Post
-                    </Button>
-
-                    <Button 
-                        onClick = {
-                            async() => {
-                                try {
-                                    await deletePost(post.ID).unwrap()
-                                    navigate('/posts')
-                                }
-                                catch(err){
-                                    console.error('Failed to delete the post: ', err)
-                                }
-
-                            }
-                        } 
-                        disabled={isLoading} variant="contained" color="error">
-                        Delete Post
-                    </Button>
-
-                </Grid>
-                ) : (
-                    <Button variant='contained' onClick={() => navigate('/posts')}>
-                        Back to Posts
-                    </Button>
-                )}
-            </Grid>
-        </Box>
-    )
+        postContent = <PostContent canEdit = {canEdit} post = {post} deletePost={deletePost}/>
     }
-    return <section>{content}</section>
+
+    if (isLoadingComments || isFetchingComments || isDeleteCommentLoading || isEditCommentLoading) {
+        commentContent = <Spinner text="Loading Comments..." />;
+    }
+    else if (isFetchCommentsSuccess && comments && post) {
+        console.log(comments)
+        commentContent = (
+            <SinglePostComment editComment = {editComment} deleteComment = {deleteComment} comments={comments} postID = {post.ID}/>
+        );
+    }
+    return (
+    <Box sx= {{mx: 3, mt: 2}}>{postContent}{commentContent}</Box>
+)
 }

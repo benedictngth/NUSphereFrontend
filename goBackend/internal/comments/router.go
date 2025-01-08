@@ -11,10 +11,11 @@ import (
 
 func Comments(router *gin.RouterGroup, commentsService CommentsService) {
 	router.POST("/create", CreateCommentHandler(commentsService))
-	router.GET("", GetCommentsHandler(commentsService))
+	router.GET("", GetCommentsByPostIDHandler(commentsService))
 	router.GET("/:id", GetCommentByPublicIDHandler(commentsService))
 	router.PUT("/edit/:id", EditCommentByPublicIDHandler(commentsService))
 	router.DELETE("/delete/:id", DeleteCommentByPublicIDHandler(commentsService))
+	//TODO implement get comments by post id
 }
 
 func CreateCommentHandler(commentsService CommentsService) gin.HandlerFunc {
@@ -36,10 +37,15 @@ func CreateCommentHandler(commentsService CommentsService) gin.HandlerFunc {
 	}
 }
 
-func GetCommentsHandler(commentsService CommentsService) gin.HandlerFunc {
+func GetCommentsByPostIDHandler(commentsService CommentsService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		time.Sleep(1 * time.Second)
-		comments, err := commentsService.GetComments(context.Background())
+		postID := c.Query("postID")
+		if postID == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "postId is required"})
+		}
+		//get comments by post id
+		comments, err := commentsService.GetCommentsByPostID(context.Background(), postID)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get comments"})
