@@ -17,6 +17,7 @@ import { EditPostForm } from './features/posts/EditPostForm'
 import { AddPostForm } from './features/posts/AddPostForm'
 import Footer from './components/Footer'
 import Box from '@mui/material/Box'
+import { AddNewCategory } from './features/category/AddNewCategory';
 
 
 
@@ -47,6 +48,7 @@ function App() {
                     <Route path="/posts/:postId" element={<SinglePostPage />} />
                     <Route path="/newPost" element={<AddPostForm />} />
                     <Route path="/editPost/:postId" element={<EditPostForm />} />
+                    <Route path="/newCategory" element={<AddNewCategory />} />
                   </Routes>
               </ProtectedRoute>
             }

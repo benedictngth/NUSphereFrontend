@@ -5,7 +5,7 @@ import { useAddNewPostMutation } from '@/api/apiSlice'
 import { Button, TextField, Input, Typography, Box, FormControl, InputLabel, FormHelperText } from '@mui/material'
 
 import { useGetCurrentUserQuery } from '../auth/authSlice'
-import { CategoriesList } from '../category/CategoryList'
+import { CategoriesList } from '../category/AddPostCategoryList'
 
 // TS types for the input fields
 // See: https://epicreact.dev/how-to-type-a-react-form-on-submit-handler/
@@ -40,9 +40,12 @@ export const AddPostForm = () => {
 
         const form = e.currentTarget 
 
-        try { 
+        try {
+            if (!currentUser?.id) {
+                throw new Error('User must be logged in to create a post');
+            }
             // await return result/error of the promise returned by addNewPost
-            await addNewPost({Title, Content, UserID: currentUser?.id!, CategoryID }).unwrap()
+            await addNewPost({Title, Content, UserID: currentUser.id, CategoryID }).unwrap()
             form.reset()
             navigate('/posts')
 

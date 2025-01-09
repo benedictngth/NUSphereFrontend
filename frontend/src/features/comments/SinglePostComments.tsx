@@ -17,11 +17,12 @@ interface CommentProps {
     postID : string
     deleteComment : DeleteCommentTrigger
     editComment: EditCommentTrigger
+    numComments : number | undefined
 }
-export function SinglePostComment({ comments, postID, deleteComment, editComment} : CommentProps) {
+export function SinglePostComment({ comments, postID, deleteComment, editComment, numComments} : CommentProps) {
     return (
         <Box>
-        <Typography variant='h5' sx={{ fontWeight: 600, marginTop: 2 }}>Comments</Typography>
+        <Typography variant='h5' sx={{ fontWeight: 600, marginTop: 2, marginBottom : 2}}>{numComments ?? "number of comments in undefined"} Comments</Typography>
 
         <Grid 
         container spacing={2}>

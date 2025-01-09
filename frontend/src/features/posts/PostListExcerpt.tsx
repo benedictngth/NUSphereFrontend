@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, styled, Typography } from "@mui/material";
 import { Post } from "./postUtils"
 import Paper from "@mui/material/Paper";
@@ -29,7 +30,7 @@ export function PostExcerpt({ post } :PostExcerptProps) {
 
     <PostItem key={post.ID} elevation={3}>
     <Box p={2}>
-    <PostCategory postId={post.CategoryID} alignCenter={false} />
+    <PostCategory categoryId={post.CategoryID} alignCenter={false} />
 
     <Typography variant="h5" component="div">
         <Link to ={`/posts/${post.ID}`}>{post.Title}</Link>
@@ -47,8 +48,8 @@ export function PostExcerpt({ post } :PostExcerptProps) {
             sx={{mr:5}}
             variant="body1" 
             component="span"
-        >
-            {numComments ?? 0} {(numComments ?? 0) <= 1 ? "comment" : "comments"} 
+        >   {isLoading ? "Loading..." : `${numComments ?? 0} ${(numComments ?? 0) <= 1 ? "comment" : "comments"}`}
+            
         </Typography>
     </Box>
     {/* <ReactionButtons post={post} /> */}

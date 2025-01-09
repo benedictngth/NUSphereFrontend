@@ -11,15 +11,15 @@ CREATE TABLE IF NOT EXISTS CATEGORIES (
   -- usage purely internal for database management
     id SERIAL PRIMARY KEY, 
   -- usage for public facing API
-    public_id char(21) UNIQUE DEFAULT nanoid(21),
+    public_id char(21) UNIQUE DEFAULT nanoid(21) NOT NULL,
     name TEXT UNIQUE NOT NULL,
     description TEXT NOT NULL,
-    -- 0 mean it is the parent category
-    parent_id INT DEFAULT 0,
-    -- TO DO with reference to which user created the category
-    created_by INT DEFAULT 1,
+    -- PARENT mean it is a parent category
+    parent_id TEXT DEFAULT 'PARENT' NOT NULL,
+    -- created_by is the user public_id who created the category
+    created_by INT  DEFAULT 1 NOT NULL,
 
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET DEFAULT
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
     -- created_at TIMESTAMP  DEFAULT NOW(),
     -- updated_at TIMESTAMP DEFAULT NOW()
 );

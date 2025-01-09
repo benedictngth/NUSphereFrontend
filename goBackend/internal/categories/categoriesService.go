@@ -2,15 +2,17 @@ package categories
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"goBackend/internal/common"
+	"goBackend/internal/users"
 
 	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 type CategoriesService interface {
-	CreateCategory(ctx context.Context, Name, Description string) error
+	CreateChildCategory(ctx context.Context, Name, Description, parentID, created_by string) error
 	GetCategories(ctx context.Context) ([]CategoryPublic, error)
 }
 
@@ -21,18 +23,25 @@ func NewCategoriesService() *categoriesService {
 	return &categoriesService{}
 }
 
-func (s *categoriesService) CreateCategory(c context.Context, Name, Description string) error {
+func (s *categoriesService) CreateChildCategory(ctx context.Context, Name, Description, parentID, CreatedBy string) error {
 	nanoid, err := gonanoid.New()
 	if err != nil {
 		log.Print(err)
 		return err
 	}
-	category := CategoryPublic{
-		ID:          nanoid,
+	category := Category{
+		PublicID:    nanoid,
 		Name:        Name,
 		Description: Description,
+		ParentID:    parentID,
 	}
-	return CreateCategory(common.GetDB(), c, category)
+	log.Printf("Created by: %s", CreatedBy)
+	user, err := users.GetUserByPublicID(common.GetDB(), ctx, CreatedBy)
+	if err != nil {
+		log.Print(err)
+		return fmt.Errorf("unable to get user: %w", err)
+	}
+	return CreateChildCategory(common.GetDB(), ctx, category, user)
 
 }
 

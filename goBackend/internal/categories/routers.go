@@ -2,26 +2,27 @@ package categories
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Categories(router *gin.RouterGroup, categoriesService CategoriesService) {
-	router.POST("/create", CreateCategoryHandler(categoriesService))
+	router.POST("/create", CreateChildCategoryHandler(categoriesService))
 	router.GET("", GetCategoriesHandler(categoriesService))
 	// // router.PUT("/edit/:id", EditCategoryHandler(categoriesService))
 	// router.DELETE("/delete/:id", DeleteCategoryHandler(categoriesService))
 }
 
-func CreateCategoryHandler(categoriesService CategoriesService) gin.HandlerFunc {
+func CreateChildCategoryHandler(categoriesService CategoriesService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req NewCategoryRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
 			return
 		}
-		err := categoriesService.CreateCategory(context.Background(), req.Name, req.Description)
+		err := categoriesService.CreateChildCategory(context.Background(), req.Name, req.Description, req.ParentID, req.CreatedBy)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "category creation failed"})
@@ -39,9 +40,22 @@ func GetCategoriesHandler(categoriesService CategoriesService) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get categories"})
 			return
 		}
+		fmt.Println(categories)
 		c.JSON(http.StatusOK, categories)
 	}
 }
+
+// func GetParentCategoriesHandler(categoriesService CategoriesService) gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		categories, err := categoriesService.GetParentCategories(context.Background())
+// 		if err != nil {
+// 			c.Error(err)
+// 			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get categories"})
+// 			return
+// 		}
+// 		c.JSON(http.StatusOK, categories)
+// 	}
+// }
 
 //implement if necessary
 

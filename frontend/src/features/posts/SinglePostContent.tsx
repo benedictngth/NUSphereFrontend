@@ -25,7 +25,7 @@ export const PostContent = ({post, canEdit, deletePost}:PostContentProps) => {
                 container spacing={2}>
                 <Grid size={12}>
 
-                    <PostCategory postId={post.CategoryID} alignCenter={true} />
+                    <PostCategory categoryId={post.CategoryID} alignCenter={true} />
 
                     <Typography
                         variant='h3'

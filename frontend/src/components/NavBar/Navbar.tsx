@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate } from "react-router-dom"
 import {useCheckAuthQuery, useGetCurrentUserQuery, useLogoutMutation } from "@/features/auth/authSlice"
 import { AppBar, Box, Button, Container, styled, Toolbar, Typography} from "@mui/material"
@@ -46,7 +47,10 @@ export const Navbar = () => {
     const onAddPostClicked = () => {
         navigate('/newPost')
     }
-    
+
+    const onAddCategoryClicked = () => {
+      navigate('/newCategory')
+    }
     return (
         <AppBar
         position="static"
@@ -105,7 +109,12 @@ export const Navbar = () => {
             {isSuccess && 
             <Grid container spacing={2}>
 
-
+                <AppBarButton
+                variant="contained"
+                onClick={onAddCategoryClicked}
+                >
+                  New Category
+                </AppBarButton>
                 <AppBarButton 
                 variant="contained"
                 onClick={onAddPostClicked}

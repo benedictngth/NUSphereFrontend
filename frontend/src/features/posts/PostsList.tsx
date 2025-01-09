@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
-import React, {useEffect, useMemo} from "react";
+import React, {useMemo} from "react";
 import classnames from 'classnames'
 
 
-import { useGetPostsQuery, useGetNumCommentsByPostIDQuery } from "@/api/apiSlice";
+import { useGetPostsQuery} from "@/api/apiSlice";
 
 
 import { Spinner } from "@/components/Spinner";

@@ -9,7 +9,7 @@ interface CategoryEditProps {
 
 
 
-export const CategoryEdit = ({defaultValue} : CategoryEditProps) => {
+export const PostCategoryEdit = ({defaultValue} : CategoryEditProps) => {
     const [category, setCategory] = React.useState<string>(defaultValue)
     const handleChange = (event: SelectChangeEvent) => {
         setCategory(event.target.value as string)

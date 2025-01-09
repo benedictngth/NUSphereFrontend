@@ -1,11 +1,11 @@
 import React from 'react'
 import { Form, useNavigate, useParams } from 'react-router-dom'
 
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+
 // import {postUpdated, selectPostById} from './postSlice'
 import { useGetPostQuery,useEditPostMutation } from '@/api/apiSlice'
 
-import { CategoryEdit } from '../category/CategoryEdit'
+import { PostCategoryEdit } from '../category/PostCategoryEdit'
 import Box from '@mui/material/Box'
 import { Button, FormControl, InputLabel, TextField } from '@mui/material'
 import { Input } from '@mui/material'
@@ -25,7 +25,7 @@ export const EditPostForm = () => {
     const {data : post} = useGetPostQuery(postId!)
     const [updatePost, {isLoading}] = useEditPostMutation();
     
-    const dispatch = useAppDispatch()
+
     const navigate = useNavigate()
 
     if (!post) {
@@ -77,7 +77,7 @@ export const EditPostForm = () => {
                 required
                 />
                 </FormControl>
-                <CategoryEdit defaultValue={post.CategoryID} />
+                <PostCategoryEdit defaultValue={post.CategoryID} />
 
                 <FormControl>
                 <TextField

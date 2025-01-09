@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import type { Post, NewPost, PostUpdate, DeletePost } from '@/features/posts/postUtils'
 
-import { Category } from '@/features/category/categoryUtil'
+import type { NewCategory, Category, ParentChildCategory } from '@/features/category/categoryUtil'
 import type { Comment, NewComment, EditComment } from '@/features/comments/commentUtils'
 export type { Post }
 
@@ -53,19 +53,24 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Post'],
     }),
-    getCategories: builder.query<Category[], void>({
+    getCategories: builder.query<ParentChildCategory[], void>({
       query: () => '/categories',
-      // transformResponse: (response: Category[]) => {
-      //     console.log(response)
-      //     return response.map(category => ({
-      //         ...category,
-      //         ID: category.ID.toString()
-      //     }))
-      // },
+      transformResponse: (response: Category[]) => {
+
+          const transformResponse  = response
+          .filter((category) => category.ParentID === "PARENT")
+          .map((parent) => ({ // group parents with children
+            parent,
+            children : response
+            .filter((category) => category.ParentID === parent.ID) // group children with parent
+          }))
+          console.log(transformResponse)
+          return transformResponse
+      },
       providesTags: ['Category'],
     }),
 
-    addCategory: builder.mutation<void, Category>({
+    addCategory: builder.mutation<void, NewCategory>({
       query: (category) => ({
         url: '/categories/create',
         method: 'POST',
