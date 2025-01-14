@@ -1,11 +1,11 @@
-import React , {useState} from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 // import {addNewPost} from '@/features/posts/postSlice'
 import { useAddNewPostMutation } from '@/api/apiSlice'
 import { Button, TextField, Input, Typography, Box, FormControl, InputLabel, FormHelperText } from '@mui/material'
 
 import { useGetCurrentUserQuery } from '../auth/authSlice'
-import { CategoriesList } from '../category/AddPostCategoryList'
+import { CategoriesList } from '../category/PostCategoryList'
 
 // TS types for the input fields
 // See: https://epicreact.dev/how-to-type-a-react-form-on-submit-handler/
@@ -75,7 +75,7 @@ export const AddPostForm = () => {
         </FormControl>
 
         <FormControl variant='standard'>
-          <CategoriesList />
+          <CategoriesList isEdit = {false} defaultValue=''/>
         </FormControl>
 
         <TextField

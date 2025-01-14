@@ -1,11 +1,11 @@
 import React from 'react'
-import { Form, useNavigate, useParams } from 'react-router-dom'
+import {useNavigate, useParams } from 'react-router-dom'
 
 
 // import {postUpdated, selectPostById} from './postSlice'
 import { useGetPostQuery,useEditPostMutation } from '@/api/apiSlice'
 
-import { PostCategoryEdit } from '../category/PostCategoryEdit'
+import { CategoriesList } from '../category/PostCategoryList'
 import Box from '@mui/material/Box'
 import { Button, FormControl, InputLabel, TextField } from '@mui/material'
 import { Input } from '@mui/material'
@@ -77,7 +77,7 @@ export const EditPostForm = () => {
                 required
                 />
                 </FormControl>
-                <PostCategoryEdit defaultValue={post.CategoryID} />
+                <CategoriesList isEdit = {true} defaultValue={post.CategoryID} />
 
                 <FormControl>
                 <TextField

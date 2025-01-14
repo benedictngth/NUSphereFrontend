@@ -9,8 +9,15 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import React from 'react'
 import { ListSubheader } from "@mui/material";
 
-export const CategoriesList = () => {
-    const [category, setCategories] = React.useState<string>('')
+interface CategoriesListProps {
+    isEdit: boolean;
+    defaultValue: string;
+}
+
+export const CategoriesList = ({isEdit, defaultValue} : CategoriesListProps) => {
+    const currentCategory = isEdit ? defaultValue : ''
+
+    const [category, setCategories] = React.useState<string>(currentCategory)
 
     const { data : categories, error, isLoading, isSuccess } = useGetCategoriesQuery()
 
