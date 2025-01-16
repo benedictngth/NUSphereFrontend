@@ -51,11 +51,11 @@ func (s *authService) Login(ctx context.Context, username, password string) (str
 
 	if err != nil {
 		log.Printf("login error: %v", err)
-		return "", errors.New("invalid username")
+		return "", errors.New(INVALID_USERNAME)
 	}
 
 	if !common.CheckPasswordHash(password, user.PasswordHash) {
-		return "", errors.New("invalid password")
+		return "", errors.New(INVALID_PASSWORD)
 	}
 
 	token, err := common.GenerateJWT(user.PublicID, user.Username, s.jwtSecret)

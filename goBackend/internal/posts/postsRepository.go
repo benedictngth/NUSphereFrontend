@@ -92,7 +92,7 @@ func GetPostByPublicID(pg *common.Postgres, ctx context.Context, publicID string
 	return pgx.CollectOneRow(row, pgx.RowToStructByName[Post])
 }
 
-func EditPostByPublicID(pg *common.Postgres, ctx context.Context, publicID string, post PostPublic) error {
+func EditPostPublicByPublicID(pg *common.Postgres, ctx context.Context, publicID string, post PostPublic) error {
 	category, categoryErr := categories.GetCategoryByPublicID(pg, ctx, post.CategoryID)
 	if categoryErr != nil {
 		return fmt.Errorf("unable to get category: %w", categoryErr)
@@ -111,7 +111,7 @@ func EditPostByPublicID(pg *common.Postgres, ctx context.Context, publicID strin
 	}
 	// check if any rows were affected
 	if result.RowsAffected() == 0 {
-		return fmt.Errorf("no rows affected")
+		return fmt.Errorf(NO_POSTS_MUTATION)
 	}
 	return nil
 }
@@ -123,7 +123,7 @@ func DeletePostByPublicID(pg *common.Postgres, ctx context.Context, publicID str
 		return fmt.Errorf("unable to delete row: %w", err)
 	}
 	if result.RowsAffected() == 0 {
-		return fmt.Errorf("no rows affected")
+		return fmt.Errorf(NO_POSTS_MUTATION)
 	}
 	return nil
 }
@@ -137,7 +137,7 @@ func GetPostsByCategory(pg *common.Postgres, ctx context.Context, categoryID str
 
 	result, err := pg.DB.Query(ctx, query, categoryID)
 	if err != nil {
-		return nil, fmt.Errorf("unable to query posts: %w", err)
+		return nil, fmt.Errorf("unable to query posts by category: %w", err)
 	}
 	defer result.Close()
 

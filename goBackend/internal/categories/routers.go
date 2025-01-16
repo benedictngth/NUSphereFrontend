@@ -3,6 +3,7 @@ package categories
 import (
 	"context"
 	"fmt"
+	"goBackend/internal/common"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,16 +20,16 @@ func CreateChildCategoryHandler(categoriesService CategoriesService) gin.Handler
 	return func(c *gin.Context) {
 		var req NewCategoryRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": common.INVALID_INPUT})
 			return
 		}
 		err := categoriesService.CreateChildCategory(context.Background(), req.Name, req.Description, req.ParentID, req.CreatedBy)
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "category creation failed"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": CREATE_CATEGORY_FAILED})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"message": "category created"})
+		c.JSON(http.StatusOK, gin.H{"message": CREATE_CATEGORY_SUCCESS})
 	}
 }
 
@@ -37,7 +38,7 @@ func GetCategoriesHandler(categoriesService CategoriesService) gin.HandlerFunc {
 		categories, err := categoriesService.GetCategories(context.Background())
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get categories"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": GET_CATEGORIES_FAILED})
 			return
 		}
 		fmt.Println(categories)

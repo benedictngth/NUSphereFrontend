@@ -2,7 +2,6 @@ package posts
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"goBackend/internal/common"
@@ -68,7 +67,7 @@ func (s *postsService) EditPostByPublicID(c context.Context, publicID, title, co
 	post.Title = title
 	post.Content = content
 	post.CategoryID = categoryID
-	return EditPostByPublicID(common.GetDB(), c, publicID, post)
+	return EditPostPublicByPublicID(common.GetDB(), c, publicID, post)
 }
 
 func (s *postsService) DeletePostByPublicID(c context.Context, publicID string) error {
@@ -76,13 +75,5 @@ func (s *postsService) DeletePostByPublicID(c context.Context, publicID string) 
 }
 
 func (s *postsService) GetPostsByCategory(c context.Context, categoryID string) ([]PostPublic, error) {
-	PostPublic, err := GetPostsByCategory(common.GetDB(), c, categoryID)
-	if err != nil {
-		return nil, err
-	}
-	if len(PostPublic) == 0 {
-		return nil, fmt.Errorf("%s", NoPosts)
-	}
-
-	return PostPublic, nil
+	return GetPostsByCategory(common.GetDB(), c, categoryID)
 }

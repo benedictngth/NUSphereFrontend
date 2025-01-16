@@ -3,6 +3,7 @@ package posts
 import (
 	// "errors"
 	"context"
+	"goBackend/internal/common"
 	"log"
 	"net/http"
 	"time"
@@ -23,17 +24,16 @@ func CreatePostHandler(postsService PostsService) gin.HandlerFunc {
 		time.Sleep(1 * time.Second)
 		var req NewPostRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": common.INVALID_INPUT})
 			return
 		}
 		//insert post into db
 		err := postsService.CreatePost(context.Background(), req.Title, req.Content, req.UserID, req.CategoryID)
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "post creation failed"})
-			return
+			c.JSON(http.StatusInternalServerError, gin.H{"error": common.INVALID_INPUT})
 		}
-		c.JSON(http.StatusOK, gin.H{"message": "post created"})
+		c.JSON(http.StatusOK, gin.H{"message": CREATE_POST})
 	}
 }
 
@@ -47,7 +47,7 @@ func GetPostsHandler(postsService PostsService) gin.HandlerFunc {
 			posts, err := postsService.GetPosts(context.Background())
 			if err != nil {
 				c.Error(err)
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get posts"})
+				c.JSON(http.StatusInternalServerError, gin.H{"error": NO_POSTS})
 				return
 			}
 			c.JSON(http.StatusOK, posts)
@@ -57,10 +57,10 @@ func GetPostsHandler(postsService PostsService) gin.HandlerFunc {
 			if err != nil {
 				c.Error(err)
 				switch err.Error() {
-				case "category not found":
-					c.JSON(http.StatusBadRequest, gin.H{"error": "category not found"})
-				case NoPosts:
-					c.JSON(http.StatusInternalServerError, gin.H{"error": "NO POSTS"})
+				case NO_CATEGORY:
+					c.JSON(http.StatusBadRequest, gin.H{"error": NO_CATEGORY})
+				case NO_POSTS:
+					c.JSON(http.StatusInternalServerError, gin.H{"error": NO_POSTS})
 				}
 			} else {
 				c.JSON(http.StatusOK, posts)
@@ -77,7 +77,7 @@ func GetPostByIDHandler(postsService PostsService) gin.HandlerFunc {
 		post, err := postsService.GetPostPublicByPublicID(context.Background(), publicID)
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get post"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": NO_POST})
 			return
 		}
 		c.JSON(http.StatusOK, post)
@@ -90,17 +90,20 @@ func EditPostByPublicIDHandler(postsService PostsService) gin.HandlerFunc {
 		publicID := c.Param("id")
 		var req EditPostRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": common.INVALID_INPUT})
 			return
 		}
 		//edit post by public id
 		err := postsService.EditPostByPublicID(context.Background(), publicID, req.Title, req.Content, req.CategoryID)
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to edit post"})
-			return
+			switch err.Error() {
+			case NO_POSTS_MUTATION:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to edit post"})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{"message": EDIT_POST})
 		}
-		c.JSON(http.StatusOK, gin.H{"message": "post edited"})
 	}
 }
 
@@ -112,9 +115,9 @@ func DeletePostByPublicIDHandler(postsService PostsService) gin.HandlerFunc {
 		err := postsService.DeletePostByPublicID(context.Background(), publicID)
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to delete post"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": NO_POSTS_MUTATION})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"message": "post deleted"})
+		c.JSON(http.StatusOK, gin.H{"message": DELETE_POST})
 	}
 }

@@ -6,6 +6,7 @@ import (
 	// "errors"
 	"context"
 	"fmt"
+	"goBackend/internal/common"
 	"log"
 	"net/http"
 
@@ -24,12 +25,13 @@ func AuthUsers(router *gin.RouterGroup, authService AuthService) {
 	router.POST("/logout", LogoutHandler(authService))
 }
 
+// used to get the authenticated user with assumption that cookies already set
 func GetAuthUserHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userId, userIdExists := c.Get("user_id")
 		username, userNameExists := c.Get("username")
 		if !userIdExists || !userNameExists {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "auth user not found"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": AUTH_USER_NOT_FOUND})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"id": userId, "username": username})
@@ -41,17 +43,17 @@ func GetAuthHandler(authService AuthService) gin.HandlerFunc {
 		_, err := c.Cookie("Authorisation")
 		log.Print(err)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, "error")
+			c.JSON(http.StatusUnauthorized, AUTH_FAILURE)
 			return
 		}
-		c.JSON(http.StatusOK, "authSuccess")
+		c.JSON(http.StatusOK, AUTH_SUCCESS)
 	}
 }
 
 func LogoutHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.SetCookie("Authorisation", "", -1, "/", "localhost", false, true)
-		c.JSON(http.StatusOK, gin.H{"cookie": "deleted", "message": "logged out"})
+		c.JSON(http.StatusOK, gin.H{"message": LOGOUT_SUCCESS})
 	}
 }
 
@@ -59,7 +61,7 @@ func Profile(router *gin.RouterGroup) {
 	router.GET("/profile", func(c *gin.Context) {
 		userID, userErr := c.Get("user_id")
 		if !userErr {
-			c.JSON(404, gin.H{"error": "user not found"})
+			c.JSON(404, gin.H{"error": NO_USER_PROFILE})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"user": userID})
@@ -76,16 +78,16 @@ func RegisterHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req RegisterRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": common.INVALID_INPUT})
 			return
 		}
 		_, err := authService.Register(context.Background(), req.Username, req.Password)
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "registration failed"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": REGISTRATION_FAILED})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"error": "nil"})
+		c.JSON(http.StatusOK, gin.H{"message": REGISTRATION_SUCCESS})
 
 	}
 }
@@ -107,8 +109,14 @@ func LoginHandler(authService AuthService) gin.HandlerFunc {
 
 		token, err := authService.Login(context.Background(), req.Username, req.Password)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
+			c.Error(err)
+			switch err.Error() {
+			case INVALID_USERNAME:
+				c.JSON(http.StatusUnauthorized, gin.H{"error": INVALID_USERNAME})
+			case INVALID_PASSWORD:
+				c.JSON(http.StatusUnauthorized, gin.H{"error": INVALID_PASSWORD})
+				return
+			}
 		}
 		log.Print("generated token string: ", token)
 		//persist token in cookie for 24 hours
@@ -122,7 +130,7 @@ func GetUsersHandler(authService AuthService) gin.HandlerFunc {
 		users, err := authService.GetUsers(context.Background())
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get users"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": USERS_NOT_FOUND})
 			return
 		}
 		c.JSON(http.StatusOK, users)
