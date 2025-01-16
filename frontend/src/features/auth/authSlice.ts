@@ -1,6 +1,5 @@
 import { apiSlice } from '@/api/apiSlice'
-import  type { AppStartListening, startAppListening } from '@/app/listernerMiddleware'
-import { Login } from '@mui/icons-material'
+
 
 // interface AuthState {
 //     username :string | null
@@ -30,7 +29,7 @@ export interface AuthUser  {
     username : string
 }
 
-const apiSliceWithAuth = apiSlice.injectEndpoints({
+export const apiSliceWithAuth = apiSlice.injectEndpoints({
     endpoints : (builder) => ({
         login : builder.mutation<LoginResponse,LoginRequest>({
             query : loginResponse => ({
@@ -38,11 +37,8 @@ const apiSliceWithAuth = apiSlice.injectEndpoints({
                 method : 'POST',
                 body :loginResponse
             }),
-            invalidatesTags: ['Auth','User'],
-            transformResponse : (response :LoginResponse) => {
-                console.log(response)
-                return response
-            }
+            invalidatesTags: ['Auth','User'], 
+
         }),
         logout :builder.mutation<void, void>({
             query : () => ({
@@ -100,18 +96,3 @@ export const {
     useRegisterMutation
 } = apiSliceWithAuth
 
-export const addLoginListerner = (startAppListening : AppStartListening) => {
-    startAppListening({
-        matcher: apiSliceWithAuth.endpoints.login.matchRejected,
-        effect : async (action, listenerApi) => {
-            const { toast } = await import('react-tiny-toast')
-            const toastId = toast.show('Login failed', {
-                variant : 'danger',
-                position : 'top-right',
-                pause : true
-            })
-            await listenerApi.delay(5000)
-            toast.remove(toastId)
-        }
-    })
-}

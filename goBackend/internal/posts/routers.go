@@ -3,6 +3,7 @@ package posts
 import (
 	// "errors"
 	"context"
+	"log"
 	"net/http"
 	"time"
 
@@ -39,13 +40,32 @@ func CreatePostHandler(postsService PostsService) gin.HandlerFunc {
 func GetPostsHandler(postsService PostsService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		time.Sleep(1 * time.Second)
-		posts, err := postsService.GetPosts(context.Background())
-		if err != nil {
-			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get posts"})
-			return
+		category := c.Query("category")
+		log.Printf("category: %s", category)
+		if category == "" {
+			//get all posts
+			posts, err := postsService.GetPosts(context.Background())
+			if err != nil {
+				c.Error(err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to get posts"})
+				return
+			}
+			c.JSON(http.StatusOK, posts)
+		} else {
+			//get posts by category
+			posts, err := postsService.GetPostsByCategory(context.Background(), category)
+			if err != nil {
+				c.Error(err)
+				switch err.Error() {
+				case "category not found":
+					c.JSON(http.StatusBadRequest, gin.H{"error": "category not found"})
+				case NoPosts:
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "NO POSTS"})
+				}
+			} else {
+				c.JSON(http.StatusOK, posts)
+			}
 		}
-		c.JSON(http.StatusOK, posts)
 	}
 }
 
@@ -53,7 +73,7 @@ func GetPostByIDHandler(postsService PostsService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		time.Sleep(1 * time.Second)
 		publicID := c.Param("id")
-		//get post by public id
+		//get category by public id
 		post, err := postsService.GetPostPublicByPublicID(context.Background(), publicID)
 		if err != nil {
 			c.Error(err)

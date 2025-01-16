@@ -21,6 +21,7 @@ type PostRepository interface {
 	GetPostByPublicID(ctx context.Context, publicID string) (Post, error)
 	EditPostByPublicID(ctx context.Context, publicID string, post PostPublic) error
 	DeletePostByPublicID(ctx context.Context, publicID string) error
+	GetPostsByCategory(ctx context.Context, categoryID string) ([]PostPublic, error)
 }
 
 func CreatePost(pg *common.Postgres, ctx context.Context, post PostPublic) error {
@@ -125,4 +126,20 @@ func DeletePostByPublicID(pg *common.Postgres, ctx context.Context, publicID str
 		return fmt.Errorf("no rows affected")
 	}
 	return nil
+}
+
+func GetPostsByCategory(pg *common.Postgres, ctx context.Context, categoryID string) ([]PostPublic, error) {
+	query := "SELECT posts.public_id as \"posts.public_id\", posts.title, posts.content, posts.created_at, posts.updated_at, users.public_id as \"users.public_id\", categories.public_id as \"categories.public_id\" " +
+		"FROM posts " +
+		"INNER JOIN users ON posts.user_id = users.id " +
+		"INNER JOIN categories ON posts.category_id = categories.id " +
+		"WHERE categories.public_id = $1"
+
+	result, err := pg.DB.Query(ctx, query, categoryID)
+	if err != nil {
+		return nil, fmt.Errorf("unable to query posts: %w", err)
+	}
+	defer result.Close()
+
+	return pgx.CollectRows(result, pgx.RowToStructByName[PostPublic])
 }

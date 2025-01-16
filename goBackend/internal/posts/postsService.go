@@ -2,6 +2,7 @@ package posts
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"goBackend/internal/common"
@@ -17,6 +18,7 @@ type PostsService interface {
 	GetPostByPublicID(ctx context.Context, publicID string) (Post, error)
 	EditPostByPublicID(ctx context.Context, publicID, title, content, categoryID string) error
 	DeletePostByPublicID(ctx context.Context, publicID string) error
+	GetPostsByCategory(ctx context.Context, categoryID string) ([]PostPublic, error)
 }
 
 type postsService struct {
@@ -71,4 +73,16 @@ func (s *postsService) EditPostByPublicID(c context.Context, publicID, title, co
 
 func (s *postsService) DeletePostByPublicID(c context.Context, publicID string) error {
 	return DeletePostByPublicID(common.GetDB(), c, publicID)
+}
+
+func (s *postsService) GetPostsByCategory(c context.Context, categoryID string) ([]PostPublic, error) {
+	PostPublic, err := GetPostsByCategory(common.GetDB(), c, categoryID)
+	if err != nil {
+		return nil, err
+	}
+	if len(PostPublic) == 0 {
+		return nil, fmt.Errorf("%s", NoPosts)
+	}
+
+	return PostPublic, nil
 }

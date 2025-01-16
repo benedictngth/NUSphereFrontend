@@ -26,7 +26,12 @@ export const apiSlice = createApi({
       ],
     }),
     getPost: builder.query<Post, string>({
-      query: (postId) => `/posts/${postId}`,
+      query: (postId) => `/posts/${postId}`, 
+      transformResponse(response : Post) {
+        console.log(response);
+        return response
+          
+      },
       providesTags: (result, error, arg) => [{ type: 'Post', ID: arg }],
     }),
     addNewPost: builder.mutation<Post, NewPost>({
@@ -37,6 +42,13 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Post'], //forces refetch of getPosts query after mutation
     }),
+    getPostByCategory: builder.query<Post[], string>({
+      query: (categoryID) => ({
+        url:`/posts?category=${categoryID}`,
+        method: 'GET',
+      }),
+      providesTags:(result, error, arg) => [{ type: 'Post', ID: arg }]
+      }),
     editPost: builder.mutation<Post, PostUpdate>({
       query: (post) => ({
         url: `/posts/edit/${post.ID}`,
@@ -115,7 +127,7 @@ export const apiSlice = createApi({
         method: 'PUT',
         body: comment,
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Comment', ID: arg.ID }],
+      invalidatesTags: (result, error, arg) => [{ type: 'Comment', ID: arg.ID }, 'NumComment'],
     }),
 
     deleteComment: builder.mutation<string, string>({
@@ -132,6 +144,7 @@ export const apiSlice = createApi({
 export const {
   useGetPostsQuery,
   useGetPostQuery,
+  useGetPostByCategoryQuery,
   useAddNewPostMutation,
   useEditPostMutation,
   useDeletePostMutation,

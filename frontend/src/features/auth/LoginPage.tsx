@@ -79,6 +79,7 @@ export const LoginPage = () => {
                             id="password"
                             variant="outlined"
                             label="Password"
+                            type="password"
                             defaultValue=""
                             />
                         </Grid>
