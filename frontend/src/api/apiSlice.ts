@@ -18,7 +18,7 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     getPosts: builder.query<Post[], void>({
       query: () => '/posts',
-      providesTags: (result = [], error, arg) => [
+      providesTags: (result = []) => [
         'Post',
         //results argument comes from success API response data
         //create array of tags for each post id to be invalidated
@@ -32,7 +32,7 @@ export const apiSlice = createApi({
         return response
           
       },
-      providesTags: (result, error, arg) => [{ type: 'Post', ID: arg }],
+      providesTags: (arg) => [{ type: 'Post', ID: arg }],
     }),
     addNewPost: builder.mutation<Post, NewPost>({
       query: (initialPost) => ({
@@ -47,7 +47,7 @@ export const apiSlice = createApi({
         url:`/posts?category=${categoryID}`,
         method: 'GET',
       }),
-      providesTags:(result, error, arg) => [{ type: 'Post', ID: arg }]
+      providesTags:(arg) => [{ type: 'Post', ID: arg }]
       }),
     editPost: builder.mutation<Post, PostUpdate>({
       query: (post) => ({
@@ -56,7 +56,12 @@ export const apiSlice = createApi({
         body: post,
       }),
       //invalidates cache (ID) for the single post that was edited
-      invalidatesTags: (result, error, arg) => [{ type: 'Post', ID: arg.ID }],
+      invalidatesTags: (arg) => {
+        if (arg && arg.ID) {
+            return [{ type: 'Post', ID: arg.ID }];
+        }
+        return [];
+      },
     }),
     deletePost: builder.mutation<DeletePost, string>({
       query: (postId) => ({
@@ -127,7 +132,7 @@ export const apiSlice = createApi({
         method: 'PUT',
         body: comment,
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Comment', ID: arg.ID }, 'NumComment'],
+      invalidatesTags: (arg) => arg ? [{ type: 'Comment', ID: arg.ID }, 'NumComment'] : ['NumComment'],
     }),
 
     deleteComment: builder.mutation<string, string>({

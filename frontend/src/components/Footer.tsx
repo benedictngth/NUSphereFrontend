@@ -24,7 +24,7 @@ export default function Footer() {
       sx={{
         py: 2,
         px: 0,
-        mt: 'auto',
+        mt: 2,
         backgroundColor: (theme) => theme.palette.primary.main,
       }}
     >

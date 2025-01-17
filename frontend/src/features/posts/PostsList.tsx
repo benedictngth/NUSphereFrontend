@@ -14,6 +14,7 @@ import { CategoriesList } from "../category/PostCategoryList";
 
 export const PostsList = () => {
     //state to manage filter
+    //cateogoryID empty string by default + default state
     const [categoryID, setCategoryID] = React.useState<string>("") 
     
 
@@ -24,7 +25,7 @@ export const PostsList = () => {
         isSuccess,
         isError,
         error,
-        refetch
+        // refetch
     } = (categoryID === "" ) ? useGetPostsQuery() : useGetPostByCategoryQuery(categoryID); 
 
     // const {data : posts} = useGetPostByCategoryQuery(categoryID);
@@ -42,11 +43,11 @@ export const PostsList = () => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const categoryID = formData.get('category') as string
-        console.log(categoryID)
         setCategoryID(categoryID)
 
 
     }
+    //set categoryID to empty string to default to all posts query
     const handleResetFilter = () => {
         setCategoryID("")
     }
@@ -60,19 +61,25 @@ export const PostsList = () => {
 
     let content: React.ReactNode
 
+    //loads content based on the state of the filter
     if (isLoading) {
       content = <Spinner text="Loading Posts..." />
     } else if (isSuccess) {
         if (posts.length === 0) {
-            content = <Typography variant="h3">No posts</Typography>
+            content = <Box><Typography variant="h4">No posts found! Add a reset button!</Typography> <Button
+            sx={{ margin: 1}}
+            onClick={handleResetFilter}
+            variant="contained">
+        Reset Filters
+    </Button> </Box>
+            
         } else{
             const renderedPosts = sortedPosts.map((post) => (
-                <PostExcerpt key={post.ID} post={post} />
+                <PostExcerpt key={post.ID} post={post} isFetching = {isFetching}/>
             ))
-            const containerClassname = classnames('posts-container', {
-                disabled:isFetching})
             content = 
-            <Grid container spacing = {2} className={containerClassname}>
+            //grey out the posts while fetching idk how to do this
+            <Grid container spacing = {2}>
             <Typography 
             variant="h3" 
             sx={{
@@ -85,18 +92,23 @@ export const PostsList = () => {
 
             <Box
             display="flex" 
-            flex-direction="column"
+            flex-direction="row"
             gap={2}
             component={"form"}
             onSubmit={handleFilterSubtmit}
             sx={{
-                marginTop: 2
+                marginTop: 2,
+                opacity: isFetching ? 0.5 : 1,
+                pointerEvents: isLoading ? 'none' : 'auto',
             }}>
                 <CategoriesList isEdit = {false} defaultValue=""/>
                 <Button
                     sx={{ margin: 1}}
                     type="submit"
-                    variant="contained">
+                    variant="contained"
+                    disabled={isFetching}
+                    > 
+                    
                 filter
                 </Button>
 
@@ -107,16 +119,13 @@ export const PostsList = () => {
                     Reset Filters
                 </Button>
             </Box>
-
+            {/* pass a prop to the postExcerpt to grey out the post */}
             {renderedPosts} 
         </Grid>
                     
         }
-
-    } else if (isSuccess && filter) {
-        content = <div>Filter</div>
-
-    } else if (isError) {
+    } 
+    else if (isError) {
       content = <div>{error.toString()}</div>
     }
     

@@ -22,7 +22,6 @@ export const CategoriesList = ({isEdit, defaultValue} : CategoriesListProps) => 
     const { data : categories, error, isLoading, isSuccess } = useGetCategoriesQuery()
 
     const handleChange = (event: SelectChangeEvent) => {
-        console.log(event.target.value)
         setCategories(event.target.value)
     }
 

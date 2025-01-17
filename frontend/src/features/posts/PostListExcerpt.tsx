@@ -13,6 +13,7 @@ import { useGetNumCommentsByPostIDQuery } from "@/api/apiSlice";
 
 interface PostExcerptProps {
     post : Post
+    isFetching: boolean
 }
 
 //custom MUI Paper component
@@ -22,13 +23,13 @@ const PostItem = styled(Paper)(({ theme }) => ({
   }));
 
 
-export function PostExcerpt({ post } :PostExcerptProps) {
+export function PostExcerpt({ post, isFetching} :PostExcerptProps) {
     const {data: numComments, isLoading} = useGetNumCommentsByPostIDQuery(post.ID)
 
     return (
     <Grid size={12}>
 
-    <PostItem key={post.ID} elevation={3}>
+    <PostItem key={post.ID} elevation={3} sx={{opacity: isFetching ? 0.5 : 1}}>
     <Box p={2}>
     <PostCategory categoryId={post.CategoryID} alignCenter={false} />
 

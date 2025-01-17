@@ -78,7 +78,8 @@ func RegisterHandler(authService AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req RegisterRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": common.INVALID_INPUT})
+			log.Printf("error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": common.INVALID_INPUT, "details": err.Error()})
 			return
 		}
 		_, err := authService.Register(context.Background(), req.Username, req.Password)

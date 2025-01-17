@@ -1,10 +1,9 @@
 import React from 'react'
-import { Form, useNavigate } from 'react-router-dom'
+import {useNavigate } from 'react-router-dom'
 
-import { useAppDispatch,useAppSelector } from '@/app/hooks'
 // import { selectAllUsers} from '@/features/users/usersSlice'
-import { useLoginMutation, useCheckAuthQuery } from './authSlice'
-import {Box, Container, FormControl, Typography} from '@mui/material'
+import { useLoginMutation } from './authSlice'
+import {Box, Container, Typography} from '@mui/material'
 import Grid from '@mui/material/Grid2'
 
 
@@ -85,7 +84,11 @@ export const LoginPage = () => {
                         </Grid>
 
                         <Grid>
-                            <Button variant="contained" type="submit">Login</Button>
+                            <Button 
+                            variant="contained" 
+                            type="submit"
+                            disabled={isLoading}
+                            >Login</Button>
                         </Grid>
 
                     </Grid>
@@ -101,7 +104,7 @@ export const LoginPage = () => {
                     alignItems: 'center'
                     }}
                 >
-                <Typography variant='body2' component="p"> Don't have an account? </Typography> 
+                <Typography variant='body2' component="p"> Don&apos;t have an account? </Typography> 
                     <Grid size={4}>
                         <Button variant="contained" onClick = {() => navigate('/register')}>Register</Button>
                     </Grid>
