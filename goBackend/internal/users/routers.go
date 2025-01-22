@@ -79,17 +79,31 @@ func RegisterHandler(authService AuthService) gin.HandlerFunc {
 		var req RegisterRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			log.Printf("error: %v", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": common.INVALID_INPUT, "details": err.Error()})
-			return
+			switch err.Error() {
+			case NOT_MIN_LENGTH_ERROR:
+				c.JSON(http.StatusBadRequest, gin.H{"error": DUPLICATE_USER})
+				return
+			default:
+				c.JSON(http.StatusBadRequest, gin.H{"error": common.INVALID_INPUT, "details": err.Error()})
+				return
+			}
 		}
-		_, err := authService.Register(context.Background(), req.Username, req.Password)
+		err := authService.Register(context.Background(), req.Username, req.Password)
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": REGISTRATION_FAILED})
-			return
+			log.Printf("err.Error() is: %v", err.Error())
+			switch err.Error() {
+			case DUPLICATE_USER_ERROR:
+				c.JSON(http.StatusConflict, gin.H{"error": DUPLICATE_USER})
+				return
+			case NOT_MIN_LENGTH_ERROR:
+				c.JSON(http.StatusBadRequest, gin.H{"error": NOT_MIN_LENGTH})
+				return
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": REGISTRATION_FAILED, "details": err.Error()})
+			}
 		}
 		c.JSON(http.StatusOK, gin.H{"message": REGISTRATION_SUCCESS})
-
 	}
 }
 
@@ -112,9 +126,9 @@ func LoginHandler(authService AuthService) gin.HandlerFunc {
 		if err != nil {
 			c.Error(err)
 			switch err.Error() {
-			case INVALID_USERNAME:
+			case INVALID_USERNAME_ERROR:
 				c.JSON(http.StatusUnauthorized, gin.H{"error": INVALID_USERNAME})
-			case INVALID_PASSWORD:
+			case INVALID_PASSWORD_ERROR:
 				c.JSON(http.StatusUnauthorized, gin.H{"error": INVALID_PASSWORD})
 				return
 			}

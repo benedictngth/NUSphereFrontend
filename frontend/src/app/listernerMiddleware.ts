@@ -2,7 +2,7 @@ import { createListenerMiddleware, addListener } from '@reduxjs/toolkit'
 import { RootState, AppDispatch } from './store'
 
 import { addPostsListeners } from '@/features/posts/postUtils'
-import { addLoginErrorListerner, addLoginSuccessListerner } from '@/features/auth/authUtils'
+import { addLoginErrorListerner, addLoginSuccessListerner, addRegisterErrorListerner } from '@/features/auth/authUtils'
 
 export const listenerMiddleware = createListenerMiddleware()
 
@@ -16,3 +16,4 @@ export type AppAddListener = typeof addAppListener
 addPostsListeners(startAppListening)
 addLoginErrorListerner(startAppListening)
 addLoginSuccessListerner(startAppListening)
+addRegisterErrorListerner(startAppListening)

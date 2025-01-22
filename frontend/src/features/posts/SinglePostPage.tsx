@@ -15,7 +15,7 @@ export const SinglePostPage = () => {
 
     const {data : post, isLoading: isLoadingPost, isFetching: isFetchingPost, isSuccess:isFetchPostSuccess} = useGetPostQuery(postId!)
 
-    const [deletePost, {isLoading, isSuccess: isDeleteSuccess}] = useDeletePostMutation()
+    const [deletePost, {isLoading}] = useDeletePostMutation()
 
     const [deleteComment, {isLoading: isDeleteCommentLoading, isSuccess: isCommentDeleteSuccess}] = useDeleteCommentMutation()
 

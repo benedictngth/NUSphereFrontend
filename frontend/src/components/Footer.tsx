@@ -23,8 +23,8 @@ export default function Footer() {
       component="footer"
       sx={{
         py: 2,
-        px: 0,
-        mt: 2,
+        px: 2, 
+        mt: 'auto',
         backgroundColor: (theme) => theme.palette.primary.main,
       }}
     >

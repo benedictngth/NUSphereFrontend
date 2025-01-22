@@ -12,7 +12,7 @@ import (
 
 // define the AuthService interface with the methods that the service will implement
 type AuthService interface {
-	Register(ctx context.Context, username, password string) (User, error)
+	Register(ctx context.Context, username, password string) error
 	Login(ctx context.Context, username, password string) (string, error)
 	GetUsers(ctx context.Context) ([]UserPublic, error)
 }
@@ -27,14 +27,14 @@ func NewAuthService(jwtSecret string) *authService {
 
 //implement the AuthService interface methods and calls respective repository methods
 
-func (s *authService) Register(ctx context.Context, username, password string) (User, error) {
-	hash, err := common.HashPassword(password)
-	if err != nil {
-		return User{}, err
+func (s *authService) Register(ctx context.Context, username, password string) error {
+	hash, passwordErr := common.HashPassword(password)
+	if passwordErr != nil {
+		return passwordErr
 	}
-	nanoid, err := gonanoid.New()
-	if err != nil {
-		return User{}, err
+	nanoid, nanoidErr := gonanoid.New()
+	if nanoidErr != nil {
+		return nanoidErr
 	}
 
 	user := User{
@@ -43,7 +43,15 @@ func (s *authService) Register(ctx context.Context, username, password string) (
 		PublicID:     nanoid,
 	}
 
-	return user, CreateUser(common.GetDB(), ctx, user)
+	registerErr := CreateUser(common.GetDB(), ctx, user)
+	if registerErr != nil {
+		log.Printf("%v", registerErr)
+		return registerErr
+	}
+	// else if registerErr == nil {
+
+	// }
+	return nil
 }
 
 func (s *authService) Login(ctx context.Context, username, password string) (string, error) {
@@ -51,11 +59,11 @@ func (s *authService) Login(ctx context.Context, username, password string) (str
 
 	if err != nil {
 		log.Printf("login error: %v", err)
-		return "", errors.New(INVALID_USERNAME)
+		return "", errors.New(INVALID_USERNAME_ERROR)
 	}
 
 	if !common.CheckPasswordHash(password, user.PasswordHash) {
-		return "", errors.New(INVALID_PASSWORD)
+		return "", errors.New(INVALID_PASSWORD_ERROR)
 	}
 
 	token, err := common.GenerateJWT(user.PublicID, user.Username, s.jwtSecret)

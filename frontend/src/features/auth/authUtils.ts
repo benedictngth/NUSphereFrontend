@@ -37,11 +37,21 @@ export const addLoginErrorListerner = (startAppListening : AppStartListening) =>
 export const addRegisterErrorListerner = (startAppListening : AppStartListening) => {
     startAppListening({
         matcher: apiSliceWithAuth.endpoints.register.matchRejected,
-        effect : async (action) => {
+        effect : async (action, listenerApi) => {
             let payloadData: PayloadData
             if (action.payload && 'data' in action.payload) {
                 payloadData = action.payload.data as PayloadData 
                 console.log(payloadData)
+
+                const { toast } = await import('react-tiny-toast')
+
+                const toastId = toast.show(payloadData.error, {
+                    variant : 'danger',
+                    position : 'top-center',
+                    pause : true
+                })
+                await listenerApi.delay(5000)
+                toast.remove(toastId)
             }
             else {
                 console.error('Invalid register response')
@@ -66,3 +76,4 @@ export const addLoginSuccessListerner = (startAppListening : AppStartListening) 
         }
     })
 }
+
