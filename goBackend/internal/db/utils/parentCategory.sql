@@ -1,2 +1,0 @@
--------default CATEGORIES
--- default parent categories - created by user 1 'admin'
