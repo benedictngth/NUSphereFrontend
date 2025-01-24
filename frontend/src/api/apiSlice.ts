@@ -6,12 +6,13 @@ import type { NewCategory, Category, ParentChildCategory } from '@/features/cate
 import type { Comment, NewComment, EditComment } from '@/features/comments/commentUtils'
 export type { Post }
 
+const API_URL = import.meta.env.VITE_API_URL
 //define single API slice object
 export const apiSlice = createApi({
   reducerPath: 'api',
 
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api',
+    baseUrl: API_URL,
     credentials: 'include',
   }),
   tagTypes: ['Post', 'Auth', 'User', 'Category', 'Comment', 'NumComment'],
