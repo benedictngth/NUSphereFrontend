@@ -23,7 +23,7 @@
     "dev": "vite",
     "start": "vite",
     "build": "vite build",
-    "servce": "vite preview",
+    "service": "vite preview",
     "format": "prettier --write ./src/**/*.{ts,tsx,css}",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
