@@ -1,6 +1,6 @@
 # CVWO Web Forum Project
 
-A modern web forum frontend application built with React, enabling users to create, share, and interact with posts.
+A modern web forum frontend application built with Vite, enabling users to create, share, and interact with posts.
 
 ## ✨ Core Features
 
