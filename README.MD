@@ -44,12 +44,11 @@ A modern web forum frontend application built with React, enabling users to crea
 ### Setup
 
 ```bash
-cd frontend
 npm install
-npm dev
+npm run dev
 ```
 
-### Environment Variables
+### Environment Variables under (.env.development)
 
 ```yaml
 VITE_API_URL=http://localhost:8080/api
