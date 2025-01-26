@@ -1,9 +1,5 @@
 import React, {useMemo} from "react";
-import classnames from 'classnames'
-
-
 import { useGetPostByCategoryQuery, useGetPostsQuery} from "@/api/apiSlice";
-
 
 import { Spinner } from "@/components/Spinner";
 import { PostExcerpt } from "./PostListExcerpt";
