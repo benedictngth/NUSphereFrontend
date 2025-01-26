@@ -25,10 +25,10 @@ export const SinglePostPage = () => {
     let commentContent : React.ReactNode;
 
     //skip the query if post is not loaded => 'waits for the posts query to finish'
-    console.log("post: "+ post)
+    // console.log("post: "+ post)
     const {data: comments, isLoading: isLoadingComments, isFetching: isFetchingComments, isSuccess: isFetchCommentsSuccess} = useGetCommentsByPostIDQuery(post?.ID ?? '', {skip: !post?.ID});
     const {data: numComments, isLoading:isLoadingNumComments} = useGetNumCommentsByPostIDQuery(post?.ID ??  '', {skip: !post?.ID});
-    console.log("Comments: "+comments)
+    // console.log("Comments: "+comments)
 
     const canEdit = currentUser?.id  ===post?.UserID;
 

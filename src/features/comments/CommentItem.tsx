@@ -38,7 +38,7 @@ export const CommentItem = ({ comment, deleteComment, editComment}: CommentItemP
   const cursorRef = React.useRef<number | null>(null);
 
   const handleDeleteComment = async () => {
-    console.log('delete comment')
+    // console.log('delete comment')
     try{
       await deleteComment(comment.ID).unwrap()
     }
@@ -48,7 +48,7 @@ export const CommentItem = ({ comment, deleteComment, editComment}: CommentItemP
   }
 
   const handleEditComment = async() => {
-    console.log("edit comment", isEditing)
+    // console.log("edit comment", isEditing)
     if (!isEditing) {
       setIsEditing(true)
     }

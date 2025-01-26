@@ -25,7 +25,7 @@ export const RegisterPage = () => {
         try {
             await register({username, password}).unwrap()
             form.reset()
-            console.log('Register successful')
+            // console.log('Register successful')
             navigate('/login')
         }
         catch (err){

@@ -21,7 +21,7 @@ interface AddPostFormElements extends HTMLFormElement {
 export const EditPostForm = () => {
     //extract the postID from the URL and post from store
     const {postId} = useParams<{postId:string}>()
-    console.log(postId)
+    // console.log(postId)
     const {data : post} = useGetPostQuery(postId!)
     const [updatePost, {isLoading}] = useEditPostMutation();
     
@@ -47,7 +47,7 @@ export const EditPostForm = () => {
         if (Title && Content && postId) {
             try {
                 await(updatePost({ID:post.ID, Title, Content, CategoryID})).unwrap()
-                console.log("Post updated")
+                // console.log("Post updated")
                 navigate(`/posts/${postId}`)
             }
             catch (err) {

@@ -29,7 +29,7 @@ export const apiSlice = createApi({
     getPost: builder.query<Post, string>({
       query: (postId) => `/posts/${postId}`, 
       transformResponse(response : Post) {
-        console.log(response);
+        // console.log(response);
         return response
           
       },
@@ -59,9 +59,9 @@ export const apiSlice = createApi({
       //invalidates cache (ID) for the single post that was edited
       invalidatesTags: (arg) => {
         if (arg && arg.ID) {
-            return [{ type: 'Post', ID: arg.ID }];
+          return [{ type: 'Post' as const, ID: arg.ID }, 'Post' as const];
         }
-        return [];
+        return ['Post' as const]; // Provide a default return value instead of undefined
       },
     }),
     deletePost: builder.mutation<DeletePost, string>({
@@ -82,7 +82,7 @@ export const apiSlice = createApi({
             children : response
             .filter((category) => category.ParentID === parent.ID) // group children with parent
           }))
-          console.log(transformResponse)
+          // console.log(transformResponse)
           return transformResponse
       },
       providesTags: ['Category'],

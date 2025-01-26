@@ -32,7 +32,7 @@ export const AddPostForm = () => {
 
       const formData = new FormData(e.currentTarget)
 
-      console.log('Form data:', formData)
+      // console.log('Form data:', formData)
 
         const Title = formData.get('postTitle') as string
         const Content = formData.get('postContent') as string

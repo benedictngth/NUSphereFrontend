@@ -8,7 +8,8 @@ A modern web forum frontend application built with React, enabling users to crea
 
 - User registration and login forms
 - Protected route navigation
-- Session management
+- Session management with JWT tokens
+- Persistent authentication using HTTP-only cookies
 
 ### Posts Management UI
 

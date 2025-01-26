@@ -35,7 +35,7 @@ export const AddComment = ({postID} : AddCommentProps) => {
     //handles form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("submitting comment")
+        // console.log("submitting comment")
         const formData = new FormData(e.currentTarget as HTMLFormElement);
         const Content = formData.get('Content') as string;
         if (!user?.id) {
