@@ -44,13 +44,21 @@ A modern web forum frontend application built with React, enabling users to crea
 
 ### Setup
 
+1. Install npm dependencies
+
 ```bash
 npm install
-npm run dev
 ```
 
-### Environment Variables under (.env.development)
+2. Set environment Variables under `.env.production` for API link to NUSpherebackend
 
 ```yaml
 VITE_API_URL=http://localhost:8080/api
+```
+
+3. Run production server
+
+```bash
+npm run build
+npm run service
 ```
