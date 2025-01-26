@@ -55,7 +55,7 @@ export const apiSliceWithAuth = apiSlice.injectEndpoints({
             }),
             // invalidatesTags : ['Auth','User'],
             transformResponse : (response :RegisterResponse) => {
-                console.log("Register response: ", response.error)
+                // console.log("Register response: ", response.error)
                 return response
             },
             invalidatesTags : ['Auth', 'User']
@@ -68,7 +68,7 @@ export const apiSliceWithAuth = apiSlice.injectEndpoints({
             }),
             providesTags : ['Auth'],
             transformResponse : (response :string) => {
-                console.log("Cookies response: ", response)
+                // console.log("Cookies response: ", response)
                 return response
             }
         }),
@@ -79,7 +79,7 @@ export const apiSliceWithAuth = apiSlice.injectEndpoints({
             }),
             providesTags : ['User'],
             transformResponse : (response :AuthUser) => {
-                console.log("Current User: ", response)
+                // console.log("Current User: ", response)
                 return response
             }
         }),
