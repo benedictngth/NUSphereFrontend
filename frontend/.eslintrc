@@ -1,9 +1,0 @@
-{
-    "extends": [
-      "eslint:recommended",
-      "plugin:prettier/recommended" // Enables Prettier and disables ESLint rules that conflict with Prettier
-    ],
-    "rules": {
-      "prettier/prettier": "error" // Treat Prettier issues as ESLint errors
-    }
-  }

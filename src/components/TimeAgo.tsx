@@ -1,3 +1,4 @@
+import React from 'react'
 import { parseISO, formatDistanceToNow, subHours } from 'date-fns'
 import { Typography } from '@mui/material'
 
@@ -9,7 +10,7 @@ export const TimeAgo = ({ timestamp }: TimeAgoProps) => {
   let timeAgo = ''
   const date = parseISO(timestamp)
 
-  const timePeriod = formatDistanceToNow(subHours(date, 8))
+  const timePeriod = formatDistanceToNow(subHours(date, 0))
   timeAgo = `${timePeriod} ago`
 
   return (
