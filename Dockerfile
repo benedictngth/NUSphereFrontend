@@ -1,3 +1,4 @@
+#used for fly.io deployment and not local development
 FROM node:18-alpine
 
 WORKDIR /app
