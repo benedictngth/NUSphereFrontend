@@ -14,7 +14,7 @@ interface AddCommentProps {
 export const AddComment = ({postID} : AddCommentProps) => {
     const [commentButton, setCommentButton] = useState<boolean>(false);
     const [textField, settextField] = useState<string>('');
-    const [addComment] = useAddCommentMutation();
+    const [addComment, {isLoading}] = useAddCommentMutation();
     const {data: user} = useGetCurrentUserQuery();
 
     //handles state of comment textfield
@@ -74,8 +74,10 @@ export const AddComment = ({postID} : AddCommentProps) => {
                     <Button 
                     type= "submit" 
                     variant="contained"
-                    color="primary">Add Comment</Button>
-                    <Button onClick = {onCancel} variant="contained" color="error">Cancel</Button>
+                    color="primary"
+                    disabled={isLoading}
+                    >Add Comment</Button>
+                    <Button onClick = {onCancel} variant="contained" color="error" disabled ={isLoading}>Cancel</Button>
                 </Box>
                 )}
 

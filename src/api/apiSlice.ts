@@ -142,7 +142,7 @@ export const apiSlice = createApi({
         method: 'DELETE',
         body: commentId,
       }),
-      invalidatesTags: ['Comment'],
+      invalidatesTags: ['Comment', 'NumComment'],
     }),
   }),
 })

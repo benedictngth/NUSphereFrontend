@@ -86,7 +86,6 @@ export const AddPostForm = () => {
           sx={{marginBottom: 2}}
           multiline
           maxRows={4}
-          defaultValue="Content Here!"
           required
         />
 
